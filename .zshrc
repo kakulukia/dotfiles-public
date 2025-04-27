@@ -1,8 +1,8 @@
 zstyle ':z4h:'                  auto-update            no
 zstyle ':z4h:'                  auto-update-days       28
 zstyle ':z4h:*'                 channel                testing
-zstyle ':z4h:autosuggestions'   forward-char           partial-accept
-zstyle ':z4h:autosuggestions'   end-of-line            partial-accept
+# zstyle ':z4h:autosuggestions'   forward-char           partial-accept
+# zstyle ':z4h:autosuggestions'   end-of-line            partial-accept
 zstyle ':z4h:term-title:ssh'    precmd                 ${${${Z4H_SSH##*:}//\%/%%}:-%m}': %~'
 zstyle ':z4h:term-title:ssh'    preexec                ${${${Z4H_SSH##*:}//\%/%%}:-%m}': ${1//\%/%%}'
 zstyle ':z4h:command-not-found' to-file                "$TTY"
@@ -10,7 +10,7 @@ zstyle ':z4h:'                  term-shell-integration yes
 zstyle ':z4h:'                  propagate-cwd          yes
 zstyle ':z4h:'                  prompt-height          4
 
-# zstyle ':z4h:direnv'          enable                 yes
+zstyle ':z4h:direnv'          enable                 yes
 # zstyle ':z4h:'                start-tmux             no
 # zstyle ':z4h:'                start-tmux             command tmux -u new -A -D -t z4h
 # zstyle ':z4h:'                term-vresize           top
@@ -32,15 +32,6 @@ fi
     fi
   done
 }
-
-if [[ $TERM == xterm-256color && ! -v ZSH_SCRIPT && ! -v ZSH_EXECUTION_STRING &&
-      -z $SSH_CONNECTON && P9K_SSH -ne 1 && -e ~/.ssh/id_rsa && -e /proc/uptime &&
-      ! (/tmp/wiped-after-boot -nt /proc/uptime) && -r /proc/version &&
-      "$(</proc/version)" == *Microsoft* ]]; then
-  print -Pr -- "%F{3}zsh%f: wiping %U/tmp%u ..."
-  sudo rm -rf -- /tmp/*(ND)
-  : >/tmp/wiped-after-boot
-fi
 
 z4h install romkatv/archive romkatv/zsh-prompt-benchmark
 
@@ -95,7 +86,7 @@ compdef _default     open
 
 zstyle    ':z4h:ssh:*' enable           yes
 zstyle    ':z4h:ssh:*' ssh-command      command ssh
-zstyle    ':z4h:ssh:*' send-extra-files '~/.zshenv-private' '~/.zshrc-private' '~/.config/htop/htoprc'
+zstyle    ':z4h:ssh:*' send-extra-files '~/.zshenv-private' '~/.zshrc-private'
 zstyle -e ':z4h:ssh:*' retrieve-history 'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 
 function z4h-ssh-configure() {
