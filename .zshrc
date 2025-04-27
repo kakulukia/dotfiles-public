@@ -196,6 +196,11 @@ function grep_no_cr() {
 compdef grep_no_cr=grep
 alias grep=grep_no_cr
 
+# custom stuff
+#######################################################################################
+alias public='/usr/bin/git --git-dir=$HOME/.dotfiles-public/ --work-tree=$HOME'
+alias private='/usr/bin/git --git-dir=$HOME/.dotfiles-private/ --work-tree=$HOME'
+
 (( $+commands[tree]  )) && alias tree='tree -a -I .git --dirsfirst'
 (( $+commands[gedit] )) && alias gedit='gedit &>/dev/null'
 (( $+commands[rsync] )) && alias rsync='rsync -rz --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
