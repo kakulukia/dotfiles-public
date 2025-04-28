@@ -1,0 +1,317 @@
+### NAVIGATION #############################################################
+# default to lsd if available
+if command -v lsd >/dev/null 2>&1; then
+    alias l='lsd -gl'
+    alias ll='lsd -gal'
+    alias lt='lsd -gltr'
+    alias llt='lsd -galtr'
+else
+    alias l='ls -Flh'
+    alias ll='ls -Flah'
+    alias lt='ls -Flthr'
+    alias llt='ls -Flathr'
+fi
+
+# alias eza='eza -Agh --classify=auto --smart-group --group-directories-first --no-quotes --time-style=long-iso --color=auto --color-scale=all --color-scale-mode=gradient --icons=auto --git --git-repos'
+# alias l='eza -lH'
+# alias la='lsd -SAFlr --total-size --group-dirs none'
+# alias ll='lsd -SAFl --total-size --group-dirs none'
+# alias ls='eza -lGH'
+# alias lt='ls -T'
+
+alias ..='cd ..'
+alias ,,='git rev-parse --git-dir >/dev/null 2>&1 && cd `git rev-parse --show-toplevel` || echo "Not in git repo"'
+alias t='cd /tmp'
+alias o='open .'
+alias tgz='COPYFILE_DISABLE=true tar -c --exclude=.git --exclude=.DS_Store -zvf '
+alias x="unarchive"
+# create folder and cd into it
+md () { mkdir -p $1; cd $1 }
+alias rd='rip'
+alias rm="echo Use 'rip' instead of rm."
+alias undelete="rip -u"
+alias tree="erd -H"
+alias treed="erd -H --dirs-only"
+alias dus='du -d 1 -h | sort -h'
+# show directory scores or find and cd into the best match
+c() {
+  if [ $# -eq 0 ]; then
+    zoxide query --list --score
+  else
+    z "$@"
+  fi
+}
+# nicer path configuration and lookup
+function path {
+  case "$1" in
+    "--save")
+      shift
+      for dir in "$@"; do
+        if [[ -d "$dir" ]]; then
+          if ! grep -q "path $dir" "$HOME/.profile"; then
+            echo "path $dir" >> "$HOME/.profile"
+          fi
+          path "$dir"  # Direkt setzen
+        else
+          echo "$dir does not exist :("
+        fi
+      done
+      ;;
+
+    "")
+      echo "sorted .."
+      echo -e "$(echo $PATH | tr ':' '\n' | sort)"
+      ;;
+
+    "-o")
+      echo -e "current order .."
+      echo -e "$(echo $PATH | tr ':' '\n')"
+      ;;
+
+    *)
+      for dir in "$@"; do
+        if [[ -d "$dir" && ":$PATH:" != *":$dir:"* ]]; then
+          export PATH="$dir:$PATH"
+        fi
+      done
+      ;;
+  esac
+}
+
+if (( $+commands[zoxide] )) && (( $+commands[fzf] )); then
+  __fzf_zoxide_c() {
+    local orig_buffer=$LBUFFER
+    local args cmd slug
+    args=(${(z)LBUFFER})
+    cmd=${args[1]}
+    [[ $cmd != c ]] && { zle expand-or-complete; return }
+    slug=${args[2]:-}
+    local entries
+    entries=(${(f)"$(zoxide query --list)"})
+    local selected
+    selected=$(
+      printf '%s\n' "${entries[@]}" \
+      | fzf \
+          --height 40% \
+          --reverse \
+          --prompt 'c> ' \
+          --query "$slug" \
+          --bind 'esc:abort'
+    ) || {
+      LBUFFER=$orig_buffer
+      zle redisplay
+      return
+    }
+    zle redisplay
+    LBUFFER="c $selected"
+    zle accept-line
+  }
+
+  # 1) Make sure __fzf_zoxide_c is registered as a ZLE widget:
+  zle -N __fzf_zoxide_c
+
+  # 2) Remember the original Tab handler (fzf‑tab’s)
+  orig_tab=$(bindkey '^I' | awk '{print $2}')
+
+  # 3) Define a smart‐Tab widget
+  function smart_tab() {
+    # split buffer into words
+    local -a args
+    args=(${(z)LBUFFER})
+
+    # if first word is "c", do your custom fzf‐zoxide logic
+    if [[ $args[1] == c ]]; then
+      __fzf_zoxide_c
+    else
+      # otherwise call the original Tab widget
+      zle $orig_tab
+    fi
+  }
+
+  # 4) Install the smart_tab widget on Tab
+  zle -N smart_tab
+  bindkey '^I' smart_tab
+fi
+
+if [[ `uname` == "Darwin" ]]; then
+  alias df="df -h"
+else
+  alias df="df -h --total"
+fi
+alias root='sudo -Es'
+# since the error codes are hidden in my shell: if you really wanna know
+alias errorcode="echo $?"
+alias p="ps aux G "
+
+# search
+alias rg="rg -S --max-columns 444"
+alias rgh='rg --hidden '
+alias rga='rg --hidden --no-ignore --search-zip'
+alias f='noglob fd'
+alias fd='f --type directory'
+alias ff='f --type file'
+alias fl='f --type symlink'
+alias fh="f --hidden"
+alias fa="f --hidden --no-ignore"
+
+
+# Globals
+alias -g G="| rg -v 'rg -S' | rg "
+alias -g GC="| rg -v 'rg -S' | rg -C 5 "
+alias -g L="| moar"
+alias -g J="| jq"
+alias -g C="| wc -l"
+alias -g F="| fzf --multi"
+
+
+### GIT STUFF ##############################################################
+alias gs='git status -s'
+# show a nice version of the git graph
+alias gg="git log --remotes --tags --oneline --decorate --stat --abbrev-commit --date=relative --branches --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n'"
+alias gf='git fetch --all --prune'
+alias ga='git add'
+alias gl='git pull'
+alias gp='git push'
+commit () { git commit -v -m "$*" }
+alias gc='noglob commit'
+alias gd='git diff'
+alias gu='git submodule update --init --recursive --remote'
+diff_so_fancy () { diff -u "$@" | diff-so-fancy }
+alias diff="diff_so_fancy"
+alias gfi='find . -type f | grep -v .venv | grep -v .idea | grep -v .direnv | grep -v migrations | grep -v static | grep -v __ | git check-ignore -v --stdin'  # find files ignored by git and the reason why
+alias grm="git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"  #remove merged branches
+
+### Managing public and private settings
+############################################################################
+alias public='/usr/bin/git --git-dir=$HOME/.dotfiles-public/ --work-tree=$HOME'
+alias private='/usr/bin/git --git-dir=$HOME/.dotfiles-private/ --work-tree=$HOME'
+
+### UTILS ##################################################################
+# Disable globbing for some tools
+alias poetry='noglob poetry'
+alias pip='noglob pip'
+alias wget="noglob wget"
+
+alias please='sudo -E zsh -c "$(fc -ln -1)"'  # rerun the last command with sudo (because it failed)
+alias cp='cp -iv'
+function mv() {
+  if [[ "$#" -ne 1 ]]; then
+    command mv -iv "$@"
+    return
+  fi
+
+  new_filename="$1"
+  vared new_filename
+  command mv -iv -- "$1" "$new_filename"
+}
+which() {
+  local format="${2:-path}"  # Default to path output
+  if [[ "$1" = "--full" ]]; then
+    format="full"
+    shift 1
+  fi
+  IFS=$'\n'
+  set -f
+  found=false
+  for LINE in $(type -a "$1" 2>/dev/null); do
+    if [[ "$LINE" == "$1 is an alias for "* ]]; then
+      alias_def=$(echo "$LINE" | sed -E "s/^$1 is an alias for //")
+      found=true
+      if [[ $format == 'full' ]]; then
+        echo "$1 is an alias for $alias_def"
+      fi
+    else
+      COMMAND=$(echo "$LINE" | awk '{print $NF}')
+      if [[ $COMMAND = /* ]]; then
+        version=$("$COMMAND" --version 2>/dev/null)
+        [[ -n $version ]] && version="($version)"
+        found=true
+        if [[ $format == 'full' ]]; then
+          echo "$1 is $COMMAND $version"
+          ll "$COMMAND"
+        else
+          echo "$COMMAND"
+          break
+        fi
+      fi
+    fi
+  done
+  if [[ $found = false ]]; then
+    return 1
+  fi
+}
+alias wi="which --full"
+
+alias update-dotfiles="~/ghar/dotfiles/misc/update.sh"
+alias stree='open -a SourceTree .'
+alias wetter='curl wttr.in/Berlin'
+alias tm='tmux attach || tmux new'
+alias getmp3="youtube-dl -x --audio-format mp3 "
+
+gpt() { sgpt "$*" }
+gpts() { sgpt -s "$*" }
+alias sg="noglob gpt"
+alias sgs="noglob gpts"
+alias dotbox="docker run -it --rm --name dotfiles-test-container --hostname dotbox --user testuser1 --workdir /home/testuser1 dotfiles-test bash"
+alias dotbox2="docker run -it --rm --name dotfiles-test-container --hostname dotbox --user testuser2 --workdir /home/testuser2 dotfiles-test bash"
+
+# Hide/show all desktop icons (useful when presenting)
+alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+sleep-in() { echo "Going to  sleep in $1 minutes .." && sleep $((60 * $1)) && pmset sleepnow }
+
+(( $+commands[bat] )) && alias cat="bat --theme TwoDark --style=plain --paging never"
+(( $+commands[fzf] )) && alias preview="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
+(( $+commands[gsed] )) && alias sed="gsed"
+(( $+commands[gtar] )) && alias tar="gtar"
+(( $+commands[gdate] )) && alias date="gdate"
+(( $+commands[moar] )) && alias less="moar"
+
+upify() {
+    buf="$(echo "${BUFFER}" | sed 's/[ |]*$//')"
+    tmp="$(mktemp)"
+    eval "${buf} |& up --unsafe-full-throttle -o '$tmp' 2>/dev/null"
+    cmd="$(tail -n +2 "$tmp")"
+    rm -f "$tmp"
+    BUFFER="${BUFFER} | ${cmd}"
+    zle end-of-line
+}
+zle -N upify
+# use Ctrl+P to invoke and Ctrl+X to close and use the result
+# bindkey '^P' upify
+
+
+### PYTHON / DJANGO ########################################################
+alias ipy="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
+alias shell='python manage.py shell_plus'
+alias rs="manage.py runserver 0.0.0.0:8000"
+# Recursively delete .DS_Store and __pycache__ files
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __pycache__ -print -delete && find . -name '*.pyc' -ls -delete"
+# Shortened python
+alias py{,3}=python3
+
+### NETWORK ################################################################
+alias ping="prettyping --nolegend"
+function seecert () {
+  nslookup $1
+  (openssl s_client -showcerts -servername $1 -connect $1:443 <<< "Q" | openssl x509 -text | grep -iA2 "Validity")
+}
+# Start an HTTP server from a directory, optionally specifying the port
+function server() {
+    local IP=`localip`
+    local port="${1:-8000}";
+    echo "http://$IP:$port/"
+    python -m http.server ${port}
+}
+# get public/local IP addresses
+alias ip="curl -s https://ifconfig.co/json J"
+alias ip4="curl -4 -s https://ifconfig.co/json J"
+alias ip6="curl -6 -s https://ifconfig.co/json J"
+alias ips="ifconfig -a | grep -o 'inet\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet? (addr:)? ?/, \"\"); print }' | grep -v 127.0.0.1"
+alias localip="ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1"
+alias get='curl --continue-at - --location --progress-bar --remote-name --remote-time'
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+alias info="fastfetch"
