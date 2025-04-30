@@ -8,8 +8,14 @@
 [difftool]
 	prompt = false
 [core]
-	pager = diff-so-fancy | less -RFXMx4
+	compression = 1
+	pager = diff-so-fancy | less --tabs=4 -RF
+	pager = diff-so-fancy | less --tabs=4 -RFX
 	untrackedCache = true
+	excludesfile = ~/.gitignore_global
+[pager]
+  diff = diff-so-fancy | less --tabs=1,5 -RFX
+  show = diff-so-fancy | less --tabs=1,5 -RFX
 [color]
 	ui = true
 [color "diff-highlight"]
@@ -18,18 +24,51 @@
 	newNormal = green bold
 	newHighlight = green bold 22
 [color "diff"]
-	meta = yellow
+	meta = 11
 	frag = magenta bold
 	commit = yellow bold
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+	func = 146 bold
 [submodule]
 	recurse = true
 	fetchJobs = 0
 [rebase]
 	autoStash = true
+[pull]
+	rebase = false
+[push]
+  default = simple
+  # "push the current branch back to the branch whose changes are usually integrated into the current branch"
+  # "refuse to push if the upstream branch’s name is different from the local one"
+  # https://git-scm.com/docs/git-config#git-config-pushdefault
+
+  followTags = true
+  # Because I get sick of telling git to do it manually
+  # https://git-scm.com/docs/git-config#git-config-pushfollowTags
 [alias]
-  patch = apply --ignore-space-change --ignore-whitespace
+	co = checkout
+	discard = reset --hard HEAD
 [init]
   defaultBranch = main
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[mergetool "pycharm"]
+	cmd = /Applications/PyCharm.app/Contents/MacOS/pycharm merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[mergetool "vimdiff"]
+  	path = nvim
+[interactive]
+	diffFilter = diff-so-fancy --patch
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[diff-so-fancy]
+	changeHunkIndicators = false

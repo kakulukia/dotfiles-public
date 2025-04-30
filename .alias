@@ -12,13 +12,6 @@ else
     alias llt='ls -Flathr'
 fi
 
-# alias eza='eza -Agh --classify=auto --smart-group --group-directories-first --no-quotes --time-style=long-iso --color=auto --color-scale=all --color-scale-mode=gradient --icons=auto --git --git-repos'
-# alias l='eza -lH'
-# alias la='lsd -SAFlr --total-size --group-dirs none'
-# alias ll='lsd -SAFl --total-size --group-dirs none'
-# alias ls='eza -lGH'
-# alias lt='ls -T'
-
 alias ..='cd ..'
 alias ,,='git rev-parse --git-dir >/dev/null 2>&1 && cd `git rev-parse --show-toplevel` || echo "Not in git repo"'
 alias t='cd /tmp'
@@ -33,14 +26,6 @@ alias undelete="rip -u"
 alias tree="erd -H"
 alias treed="erd -H --dirs-only"
 alias dus='du -d 1 -h | sort -h'
-# show directory scores or find and cd into the best match
-c() {
-  if [ $# -eq 0 ]; then
-    zoxide query --list --score
-  else
-    z "$@"
-  fi
-}
 # nicer path configuration and lookup
 function path {
   case "$1" in
@@ -78,60 +63,6 @@ function path {
   esac
 }
 
-if (( $+commands[zoxide] )) && (( $+commands[fzf] )); then
-  __fzf_zoxide_c() {
-    local orig_buffer=$LBUFFER
-    local args cmd slug
-    args=(${(z)LBUFFER})
-    cmd=${args[1]}
-    [[ $cmd != c ]] && { zle expand-or-complete; return }
-    slug=${args[2]:-}
-    local entries
-    entries=(${(f)"$(zoxide query --list)"})
-    local selected
-    selected=$(
-      printf '%s\n' "${entries[@]}" \
-      | fzf \
-          --height 40% \
-          --reverse \
-          --prompt 'c> ' \
-          --query "$slug" \
-          --bind 'esc:abort'
-    ) || {
-      LBUFFER=$orig_buffer
-      zle redisplay
-      return
-    }
-    zle redisplay
-    LBUFFER="c $selected"
-    zle accept-line
-  }
-
-  # 1) Make sure __fzf_zoxide_c is registered as a ZLE widget:
-  zle -N __fzf_zoxide_c
-
-  # 2) Remember the original Tab handler (fzf‑tab’s)
-  orig_tab=$(bindkey '^I' | awk '{print $2}')
-
-  # 3) Define a smart‐Tab widget
-  function smart_tab() {
-    # split buffer into words
-    local -a args
-    args=(${(z)LBUFFER})
-
-    # if first word is "c", do your custom fzf‐zoxide logic
-    if [[ $args[1] == c ]]; then
-      __fzf_zoxide_c
-    else
-      # otherwise call the original Tab widget
-      zle $orig_tab
-    fi
-  }
-
-  # 4) Install the smart_tab widget on Tab
-  zle -N smart_tab
-  bindkey '^I' smart_tab
-fi
 
 if [[ `uname` == "Darwin" ]]; then
   alias df="df -h"
@@ -147,12 +78,11 @@ alias p="ps aux G "
 alias rg="rg -S --max-columns 444"
 alias rgh='rg --hidden '
 alias rga='rg --hidden --no-ignore --search-zip'
-alias f='noglob fd'
-alias fd='f --type directory'
-alias ff='f --type file'
-alias fl='f --type symlink'
-alias fh="f --hidden"
-alias fa="f --hidden --no-ignore"
+alias fdd='fd --type directory'
+alias fdf='fd --type file'
+alias fdl='fd --type symlink'
+alias fdh="fd --hidden"
+alias fda="fd --hidden --no-ignore"
 
 
 # Globals
@@ -162,6 +92,7 @@ alias -g L="| moar"
 alias -g J="| jq"
 alias -g C="| wc -l"
 alias -g F="| fzf --multi"
+alias -g P="|& up"
 
 
 ### GIT STUFF ##############################################################
@@ -181,14 +112,10 @@ alias diff="diff_so_fancy"
 alias gfi='find . -type f | grep -v .venv | grep -v .idea | grep -v .direnv | grep -v migrations | grep -v static | grep -v __ | git check-ignore -v --stdin'  # find files ignored by git and the reason why
 alias grm="git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"  #remove merged branches
 
-### Managing public and private settings
-############################################################################
-alias public='/usr/bin/git --git-dir=$HOME/.dotfiles-public/ --work-tree=$HOME'
-alias private='/usr/bin/git --git-dir=$HOME/.dotfiles-private/ --work-tree=$HOME'
-
 ### UTILS ##################################################################
 # Disable globbing for some tools
 alias poetry='noglob poetry'
+
 alias pip='noglob pip'
 alias wget="noglob wget"
 
@@ -228,7 +155,6 @@ which() {
         found=true
         if [[ $format == 'full' ]]; then
           echo "$1 is $COMMAND $version"
-          ll "$COMMAND"
         else
           echo "$COMMAND"
           break
@@ -242,7 +168,6 @@ which() {
 }
 alias wi="which --full"
 
-alias update-dotfiles="~/ghar/dotfiles/misc/update.sh"
 alias stree='open -a SourceTree .'
 alias wetter='curl wttr.in/Berlin'
 alias tm='tmux attach || tmux new'
@@ -267,6 +192,7 @@ sleep-in() { echo "Going to  sleep in $1 minutes .." && sleep $((60 * $1)) && pm
 (( $+commands[gtar] )) && alias tar="gtar"
 (( $+commands[gdate] )) && alias date="gdate"
 (( $+commands[moar] )) && alias less="moar"
+(( $+commands[nvim] )) && alias vim="nvim"
 
 upify() {
     buf="$(echo "${BUFFER}" | sed 's/[ |]*$//')"
@@ -278,8 +204,8 @@ upify() {
     zle end-of-line
 }
 zle -N upify
-# use Ctrl+P to invoke and Ctrl+X to close and use the result
-# bindkey '^P' upify
+# use ALT+P to invoke and Ctrl+X to close and use the result
+bindkey 'π' upify    # Alt+u
 
 
 ### PYTHON / DJANGO ########################################################

@@ -1,4 +1,11 @@
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+
 if [ -n "${ZSH_VERSION-}" ]; then
+  # export stuff here
+  # export GOPATH=$HOME/go
+  #
+  # Do not change anything else in this file.
+
   : ${ZDOTDIR:=~}
   setopt no_global_rcs
   [[ ! -e ~/.zshenv-private ]] || source ~/.zshenv-private
