@@ -1,3 +1,6 @@
+# are we fast yet? - show benchmarks via: ZPROF=1 zsh -i -c exit
+[ -z "$ZPROF" ] || zmodload zsh/zprof
+
 # export FZF_DEFAULT_OPTS="--exact --no-sort --case=smart"
 # export FZF_DEFAULT_COMMAND='fd --type d --hidden'
 zstyle ':z4h:'                  auto-update            no
@@ -34,13 +37,16 @@ zstyle ':completion:*'                       insert-slash       true
 zstyle ':completion:*' add-space false
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' completer _complete
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}'
+# zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}'
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
 zstyle ':z4h:*'    find-command fd
 zstyle    ':z4h:ssh:*' enable           yes
 zstyle    ':z4h:ssh:*' ssh-command      command ssh
 zstyle    ':z4h:ssh:*' send-extra-files '~/.zshenv-private' '~/.zshrc-private' '~/.alias'
 zstyle -e ':z4h:ssh:*' retrieve-history 'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                  propagate-cwd          yes
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd $realpath'
 
 
 # zstyle ':z4h:*'    find-flags   -H -t f -E .git -E __pycache__
@@ -115,8 +121,9 @@ export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_ENV_HINTS=1
 export SYSTEMD_LESS=moar
 export MANOPT=--no-hyphenation
+PROMPT_EOL_MARK='%F{red}⏎%f'
 
-
+# merge history files for a combined history
 () {
   local hist
   for hist in ~/.zsh_history*~$HISTFILE(N); do
@@ -196,6 +203,21 @@ if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   z4h source -c -- ~/.cache/starship-init.zsh
 fi
 
+# Initialize fnm with caching
+if (( $+commands[fnm] )); then
+  # Check if cache file exists
+  if [[ ! -f ~/.cache/fnm-init.zsh ]]; then
+    echo "Creating fnm init cache..."
+    mkdir -p ~/.cache
+    fnm env --use-on-cd --shell zsh > ~/.cache/fnm-init.zsh
+  fi
+  # Load cached initialization with z4h
+  # z4h source -c -- ~/.cache/fnm-init.zsh
+fi
+
 z4h source -c -- $ZDOTDIR/.alias
 z4h source -c -- $ZDOTDIR/.zshrc-private
 z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc}
+
+# show benchmark results
+[ -z "$ZPROF" ] || zprof

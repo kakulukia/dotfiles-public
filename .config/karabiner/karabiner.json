@@ -68,7 +68,13 @@
                         "product_id": 49278,
                         "vendor_id": 1133
                     },
-                    "manipulate_caps_lock_led": false
+                    "manipulate_caps_lock_led": false,
+                    "simple_modifications": [
+                        {
+                            "from": { "pointing_button": "button3" },
+                            "to": [{ "key_code": "up_arrow" }]
+                        }
+                    ]
                 },
                 {
                     "fn_function_keys": [
@@ -126,6 +132,7 @@
                         "product_id": 6481,
                         "vendor_id": 2821
                     },
+                    "manipulate_caps_lock_led": false,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "application" },
@@ -139,6 +146,8 @@
                         "product_id": 834,
                         "vendor_id": 1452
                     },
+                    "ignore": true,
+                    "manipulate_caps_lock_led": false,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "grave_accent_and_tilde" },

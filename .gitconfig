@@ -14,8 +14,8 @@
 	untrackedCache = true
 	excludesfile = ~/.gitignore_global
 [pager]
-  diff = diff-so-fancy | less --tabs=1,5 -RFX
-  show = diff-so-fancy | less --tabs=1,5 -RFX
+	diff = diff-so-fancy | less --tabs=1,5 -RFX
+	show = diff-so-fancy | less --tabs=1,5 -RFX
 [color]
 	ui = true
 [color "diff-highlight"]
@@ -39,29 +39,23 @@
 [pull]
 	rebase = false
 [push]
-  default = simple
-  # "push the current branch back to the branch whose changes are usually integrated into the current branch"
-  # "refuse to push if the upstream branch’s name is different from the local one"
-  # https://git-scm.com/docs/git-config#git-config-pushdefault
+	default = simple
+	# "push the current branch back to the branch whose changes are usually integrated into the current branch"
+	# "refuse to push if the upstream branch’s name is different from the local one"
+	# https://git-scm.com/docs/git-config#git-config-pushdefault
 
-  followTags = true
-  # Because I get sick of telling git to do it manually
-  # https://git-scm.com/docs/git-config#git-config-pushfollowTags
+	followTags = true
+	# Because I get sick of telling git to do it manually
+	# https://git-scm.com/docs/git-config#git-config-pushfollowTags
 [alias]
 	co = checkout
 	discard = reset --hard HEAD
 [init]
-  defaultBranch = main
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	defaultBranch = main
 [mergetool "pycharm"]
 	cmd = /Applications/PyCharm.app/Contents/MacOS/pycharm merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 [mergetool "vimdiff"]
-  	path = nvim
+	path = nvim
 [interactive]
 	diffFilter = diff-so-fancy --patch
 [filter "lfs"]

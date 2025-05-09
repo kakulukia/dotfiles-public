@@ -75,9 +75,10 @@ alias errorcode="echo $?"
 alias p="ps aux G "
 
 # search
-alias rg="rg -S --max-columns 444"
+alias rg="rg -S --max-columns 444 --no-require-git"
 alias rgh='rg --hidden '
 alias rga='rg --hidden --no-ignore --search-zip'
+alias fd='fd --no-require-git'
 alias fdd='fd --type directory'
 alias fdf='fd --type file'
 alias fdl='fd --type symlink'
