@@ -203,18 +203,6 @@ if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   z4h source -c -- ~/.cache/starship-init.zsh
 fi
 
-# # Initialize fnm with caching
-# if (( $+commands[fnm] )); then
-#   # Check if cache file exists
-#   if [[ ! -f ~/.cache/fnm-init.zsh ]]; then
-#     echo "Creating fnm init cache..."
-#     mkdir -p ~/.cache
-#     fnm env --use-on-cd --shell zsh > ~/.cache/fnm-init.zsh
-#   fi
-#   # Load cached initialization with z4h
-#   z4h source -c -- ~/.cache/fnm-init.zsh
-# fi
-
 # Lazy-init fnm on first Node-related command
 for cmd in node npm npx yarn pm2; do
   eval "function $cmd {\
