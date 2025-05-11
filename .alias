@@ -19,7 +19,7 @@ alias o='open .'
 alias tgz='COPYFILE_DISABLE=true tar -c --exclude=.git --exclude=.DS_Store -zvf '
 alias x="unarchive"
 # create folder and cd into it
-md () { mkdir -p $1; cd $1 }
+function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
 alias rd='rip'
 alias rm="echo Use 'rip' instead of rm."
 alias undelete="rip -u"
@@ -209,7 +209,7 @@ zle -N upify
 bindkey 'π' upify    # Alt+u
 
 
-### PYTHON / DJANGO ########################################################
+### PYTHON / DJANGO / NODE ########################################################
 alias ipy="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
 alias shell='python manage.py shell_plus'
 alias rs="manage.py runserver 0.0.0.0:8000"
@@ -217,9 +217,18 @@ alias rs="manage.py runserver 0.0.0.0:8000"
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __pycache__ -print -delete && find . -name '*.pyc' -ls -delete"
 # Shortened python
 alias py{,3}=python3
+# Lazy-init fnm on first Node-related command
+for cmd in node npm npx yarn pm2; do
+  eval "function $cmd {\
+    unset -f node npm npx yarn pm2;\
+    eval \"\$(fnm env --use-on-cd --shell zsh)\";\
+    command $cmd \"\$@\";\
+  }"
+done
 
 ### NETWORK ################################################################
 alias ping="prettyping --nolegend"
+(( $+commands[rsync] )) && alias rsync='rsync -rz --info=FLIST,COPY,DEL,REMOVE,SKIP,SYMSAFE,MISC,NAME,PROGRESS,STATS'
 function seecert () {
   nslookup $1
   (openssl s_client -showcerts -servername $1 -connect $1:443 <<< "Q" | openssl x509 -text | grep -iA2 "Validity")

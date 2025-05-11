@@ -3,7 +3,6 @@
 " Description: Always restore cursor to last known position on file open
 " Location: ~/.SpaceVim.d/plugin/lastcursor.vim
 " DEBUG: ensure this plugin file is actually sourced on startup
-echom "[lastcursor] plugin sourced"
   
 augroup lastcursor
   autocmd!
