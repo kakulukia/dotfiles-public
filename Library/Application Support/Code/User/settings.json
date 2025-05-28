@@ -1,0 +1,57 @@
+{
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "explorer.confirmDelete": false,
+  "editor.minimap.enabled": false,
+  "workbench.colorTheme": "Copilot Theme",
+  "materialTheme.fixIconsRunning": false,
+  "workbench.iconTheme": "eq-material-theme-icons-palenight",
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.wordWrap": "on",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
+  "python.showStartPage": false,
+  "update.showReleaseNotes": false,
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  "security.workspace.trust.banner": "never",
+  "security.workspace.trust.enabled": false,
+  "editor.fontFamily": "\"SauceCodePro Nerd Font\"",
+  "sync.gist": "5a9eb2eb3eb032c8bd8d2fd6d36fd424",
+  "sync.forceUpload": true,
+  "sync.syncExtensions": false,
+  "sync.autoUpload": true,
+  "workbench.startupEditor": "none",
+  "editor.accessibilitySupport": "off",
+  "sync.quietSync": true,
+  "bracketPairColorizer.depreciation-notice": false,
+  "editor.formatOnType": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "workbench.editor.empty.hint": "hidden",
+  "editor.unicodeHighlight.invisibleCharacters": false,
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "git.openRepositoryInParentFolders": "always",
+  "files.hotExit": "onExitAndWindowClose",
+  "files.associations": {
+    "config": "config"
+  },
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "git.autoRepositoryDetection": "subFolders",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "editor.tabSize": 2,
+  "indentRainbow.indicatorStyle": "light"
+}

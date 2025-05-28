@@ -33,8 +33,8 @@ function path {
       shift
       for dir in "$@"; do
         if [[ -d "$dir" ]]; then
-          if ! grep -q "path $dir" "$HOME/.profile"; then
-            echo "path $dir" >> "$HOME/.profile"
+          if ! grep -q "path $dir" "$HOME/.zsh-profile"; then
+            echo "path $dir" >> "$HOME/.zsh-profile"
           fi
           path "$dir"  # Direkt setzen
         else
@@ -116,7 +116,6 @@ alias grm="git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"  #re
 ### UTILS ##################################################################
 # Disable globbing for some tools
 alias poetry='noglob poetry'
-
 alias pip='noglob pip'
 alias wget="noglob wget"
 
@@ -225,6 +224,7 @@ for cmd in node npm npx yarn pm2; do
     command $cmd \"\$@\";\
   }"
 done
+alias aid='PYTHONPATH="$(python -c "import site; print(site.getsitepackages()[-1])")" aider --no-auto-commits --model o4-mini'
 
 ### NETWORK ################################################################
 alias ping="prettyping --nolegend"
