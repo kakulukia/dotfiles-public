@@ -42,7 +42,7 @@ zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.zshenv-private' '~/.zshrc-private' '~/.alias'
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias'
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'
@@ -77,6 +77,7 @@ export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_ENV_HINTS=1
 export SYSTEMD_LESS=moar
 export MANOPT=--no-hyphenation
+export RIP_GRAVEYARD=$HOME/.graveyard
 PROMPT_EOL_MARK='%F{red}⏎%f'
 
 () {
@@ -141,8 +142,10 @@ if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
 fi
 
 z4h source -c -- $ZDOTDIR/.alias
+z4h source -c -- $ZDOTDIR/.zsh-profile  # for local changes that wont be synced
 z4h source -c -- $ZDOTDIR/.zshrc-private
 z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.alias,.zshrc-private}
 
 # show benchmark results
 [ -z "$ZPROF" ] || zprof
+

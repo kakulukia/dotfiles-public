@@ -191,7 +191,7 @@ sleep-in() { echo "Going to  sleep in $1 minutes .." && sleep $((60 * $1)) && pm
 (( $+commands[gsed] )) && alias sed="gsed"
 (( $+commands[gtar] )) && alias tar="gtar"
 (( $+commands[gdate] )) && alias date="gdate"
-(( $+commands[moar] )) && alias less="moar"
+(( $+commands[moar] )) && alias less="moor"
 (( $+commands[nvim] )) && alias vim="nvim"
 
 upify() {
@@ -217,9 +217,9 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __p
 # Shortened python
 alias py{,3}=python3
 # Lazy-init fnm on first Node-related command
-for cmd in node npm npx yarn pm2; do
+for cmd in node npm npx yarn pm2 fnm; do
   eval "function $cmd {\
-    unset -f node npm npx yarn pm2;\
+    unset -f node npm npx yarn pm2 fnm;\
     eval \"\$(fnm env --use-on-cd --shell zsh)\";\
     command $cmd \"\$@\";\
   }"

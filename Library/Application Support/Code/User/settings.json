@@ -53,5 +53,6 @@
   "git.autoRepositoryDetection": "subFolders",
   "github.copilot.nextEditSuggestions.enabled": true,
   "editor.tabSize": 2,
-  "indentRainbow.indicatorStyle": "light"
+  "indentRainbow.indicatorStyle": "light",
+  "python.defaultInterpreterPath": "/opt/homebrew/bin/python3"
 }
