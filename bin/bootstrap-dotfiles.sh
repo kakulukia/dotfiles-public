@@ -24,8 +24,8 @@ function clone_repo() {
   git --git-dir="$git_dir" config status.showuntrackedfiles no
   git --git-dir="$git_dir" remote add origin "$uri"
   git --git-dir="$git_dir" fetch
-  git --git-dir="$git_dir" reset origin/master
-  git --git-dir="$git_dir" branch -u origin/master
+  git --git-dir="$git_dir" reset origin/main
+  git --git-dir="$git_dir" branch -u origin/main
   git --git-dir="$git_dir" checkout -- .
   git --git-dir="$git_dir" submodule update --init --recursive
 }
