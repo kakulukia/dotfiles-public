@@ -208,6 +208,37 @@ def ensure_rustup_and_binstall():
             print(f"Failed to install cargo-binstall: {e}")
 
 
+def _apply_fnm_env_to_process(shell: str = "bash"):
+    """Apply environment exports from `fnm env --shell <shell>` to this Python process.
+    Only handles simple `export KEY=VALUE` lines and expands $HOME and $PATH.
+    """
+    if not shutil.which("fnm"):
+        return
+    try:
+        res = subprocess.run(
+            ["fnm", "env", "--shell", shell],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except Exception:
+        return
+
+    for raw in res.stdout.splitlines():
+        line = raw.strip().rstrip(";")
+        if not line.startswith("export "):
+            continue
+        body = line[len("export "):]
+        if "=" not in body:
+            continue
+        key, val = body.split("=", 1)
+        key = key.strip()
+        val = val.strip().strip('"').strip("'")
+        # Expand tokens
+        val = val.replace("$HOME", os.path.expanduser("~")).replace("${HOME}", os.path.expanduser("~"))
+        val = val.replace("$PATH", os.environ.get("PATH", ""))
+        os.environ[key] = val
+
 def ensure_npm_if_needed(selected, name_to_app, to_install_list):
     """Ensure npm for npm-category tools. If npm is missing and cannot be made
     available, skip npm tools instead of aborting the whole installation.
@@ -227,6 +258,12 @@ def ensure_npm_if_needed(selected, name_to_app, to_install_list):
 
     if shutil.which("npm"):
         return to_install_list, []  # npm available, proceed as usual
+
+    # Try to lazily apply fnm env if fnm is installed but PATH is not primed
+    if shutil.which("fnm") and not shutil.which("npm"):
+        _apply_fnm_env_to_process(shell="zsh")  # prefer zsh semantics in your setup
+        if shutil.which("npm"):
+            return to_install_list, []
 
     # npm missing
     if shutil.which("fnm"):
@@ -272,6 +309,64 @@ def ensure_npm_if_needed(selected, name_to_app, to_install_list):
         ))
     filtered = [n for n in to_install_list if n not in skipped]
     return filtered, skipped
+
+
+# --- Helper: ensure npm global installs are user-space (avoid sudo) ---
+def ensure_npm_user_prefix():
+    """Ensure `npm -g` installs do not require sudo by using a user-space prefix.
+
+    If current `npm config get prefix` is not writable (e.g., /usr/local), set it to
+    `~/.local` and prepend `~/.local/bin` to PATH for this process.
+    """
+    if not shutil.which("npm"):
+        return  # nothing to do; handled elsewhere
+
+    def _writable(p: str) -> bool:
+        try:
+            return os.access(p, os.W_OK)
+        except Exception:
+            return False
+
+    try:
+        out = subprocess.run(["npm", "config", "get", "prefix"], capture_output=True, text=True, check=True)
+        prefix = out.stdout.strip()
+    except subprocess.CalledProcessError:
+        prefix = ""
+
+    # Resolve to absolute path for checks
+    if prefix:
+        prefix_abs = os.path.expanduser(prefix)
+    else:
+        prefix_abs = ""
+
+    # If prefix is empty, non-writable, or lives in /usr, switch to ~/.local
+    needs_change = (
+        not prefix_abs
+        or prefix_abs.startswith("/usr")
+        or not _writable(prefix_abs)
+    )
+
+    user_prefix = os.path.expanduser("~/.local")
+    user_bin = os.path.join(user_prefix, "bin")
+
+    if needs_change:
+        # Create directories if needed
+        os.makedirs(user_bin, exist_ok=True)
+        try:
+            subprocess.run(["npm", "config", "set", "prefix", user_prefix], check=True)
+        except subprocess.CalledProcessError as e:
+            console.print(f"[red]Failed to set npm prefix to {user_prefix}: {e}[/red]")
+        else:
+            console.print(Panel.fit(
+                f"npm global prefix changed to:\n  {user_prefix}\n\nGlobal installs will not require sudo.",
+                title="npm user-space prefix",
+                style="green",
+            ))
+
+    # Ensure ~/.local/bin is on PATH for this process so installed CLIs are visible
+    current_path = os.environ.get("PATH", "")
+    if user_bin not in current_path.split(":"):
+        os.environ["PATH"] = f"{user_bin}:{current_path}" if current_path else user_bin
 
 
 # Detect system package manager early and request sudo once if needed
@@ -410,6 +505,9 @@ while True:
         else:
             console.print("[green]All selected tools are already installed. Nothing to do. Exiting.[/green]")
         sys.exit(0)
+
+    # Make npm global installs user-space (avoid sudo)
+    ensure_npm_user_prefix()
 
     # Offer to proceed, change selection, or cancel
     try:

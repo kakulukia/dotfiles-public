@@ -217,7 +217,7 @@
     "apps": [
       {
         "name": "fkill-cli",
-        "default": true,
+        "default": false,
         "desc": "Prozesse komfortabel beenden",
         "cmd": "fkill"
       },
