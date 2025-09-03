@@ -208,6 +208,71 @@ def ensure_rustup_and_binstall():
             print(f"Failed to install cargo-binstall: {e}")
 
 
+def ensure_npm_if_needed(selected, name_to_app):
+    """If the selection includes npm tools but npm is not available, guide the user.
+
+    If `fnm` is available, offer to install a Node LTS (example: 24) and then restart this script.
+    If `fnm` is not available, show instructions and exit.
+    """
+    # Determine whether any selected tool belongs to the npm category
+    needs_npm = False
+    for _name in selected:
+        meta = name_to_app.get(_name)
+        if meta and meta.get("category") == "npm":
+            needs_npm = True
+            break
+
+    if not needs_npm:
+        return  # nothing to do
+
+    if shutil.which("npm"):
+        return  # npm available, proceed as usual
+
+    # npm missing
+    if shutil.which("fnm"):
+        console.print(Panel.fit(
+            "npm is not available, but fnm was found.\n"
+            "I can install a Node version now (e.g., 24) so npm becomes available,\n"
+            "then restart this script.",
+            title="Node.js required",
+            style="yellow"
+        ))
+        try:
+            do_install = inquirer.confirm(
+                message="Install Node 24 via fnm now and restart?",
+                default=True,
+            ).execute()
+        except KeyboardInterrupt:
+            print("\nOperation cancelled by user. Exiting.")
+            sys.exit(0)
+
+        if not do_install:
+            console.print("[red]npm is required for selected tools. Exiting.[/red]")
+            sys.exit(1)
+
+        try:
+            # Install and activate Node 24 for the current shell session
+            subprocess.run(["sh", "-c", "fnm install 24 && fnm use 24"], check=True)
+        except subprocess.CalledProcessError as e:
+            console.print(f"[red]Failed to install/use Node via fnm: {e}[/red]")
+            sys.exit(1)
+
+        # Try to restart this script so the new npm is picked up
+        if shutil.which("uv"):
+            os.execvp("uv", ["uv", "run", "--script", __file__, *sys.argv[1:]])
+        else:
+            os.execv(sys.executable, [sys.executable, __file__, *sys.argv[1:]])
+
+    # fnm not found -> instruct and exit
+    console.print(Panel.fit(
+        "npm is not available and fnm is not installed.\n"
+        "Please install fnm, then run:\n\n  fnm install 24\n  fnm use 24\n\nThen start this script again.",
+        title="Node.js required",
+        style="red"
+    ))
+    sys.exit(1)
+
+
 # Detect system package manager early and request sudo once if needed
 pkg_mgr = detect_system_package_manager()
 ensure_sudo_if_needed(pkg_mgr)
@@ -333,6 +398,9 @@ while True:
     if to_install_list == []:
         console.print("[green]All selected tools are already installed. Nothing to do. Exiting.[/green]")
         sys.exit(0)
+
+    # Ensure npm is available if npm tools are selected; may restart the script
+    ensure_npm_if_needed(selected, name_to_app)
 
     # Offer to proceed, change selection, or cancel
     try:
