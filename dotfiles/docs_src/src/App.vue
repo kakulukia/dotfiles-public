@@ -92,11 +92,10 @@ body
       p In the misc folder you can find:
       ul
         li the Powerline patched SourceCode font (you may use any #[a(href="https://www.nerdfonts.com/" target="_blank") Nerdfont])
-        li my currently used Dracula.itermcolors
         li better-osx-settings script
         li.
-          an opinionated set of tools (#[a(href="https://github.com/kakulukia/dotfiles/blob/master/misc/essentials.txt") these] and
-          #[a(href="https://github.com/kakulukia/dotfiles/blob/master/misc/additional-stuff.sh") those])
+          an opinionated set of #[a(href="https://github.com/kakulukia/dotfiles-public/blob/main/bin/apps.json") tools] the can be
+          installed with #[span.command select-tools]
 
       p The dotfiles repo can be updated with the #[span.command sync-dotfiles] alias.
 
@@ -133,7 +132,7 @@ body
         li ,, - jump to the git root dir
         li o - will open the finder in the current directory
         li
-          a(href="https://github.com/kakulukia/dotfiles/tree/master/bin") cdto.app
+          a(href="https://github.com/kakulukia/dotfiles-public/tree/main/bin") cdto.app
           |  - there is an app in the bin folder that provides a
           | way to reverse the above trick and opens a terminal at the current finder location.
           | Use the command key to just drag it into the finders toolbar.
@@ -146,26 +145,26 @@ body
 
         li
           a(
-            href="https://github.com/kakulukia/dotfiles/tree/master/misc/QuickLook"
+            href="https://github.com/chamburr/glance"
           ) QuickLook Plugins
-          |  - the referenced quick look plugins allstopped working - need to figure out what i installed lately to replace them. :(
+          span  for OSX
         li diff - aliased to diff-so-fancy in general, not just the git version
-        li ips - will show all local ips (IPV4) / ip4/6 will show some info about your external one
+        li ips - will show all local ips (IPV4) / ip[4|6] will show some info about your external one
         li ping - is aliased to prettyping
         li rg - alias for "rg -S --max-columns 444" won't clutter the screen with nasty one line files
+        li I love the global alias G for "| rg" - i use that alot
         li customize startship.toml to create a custom prompt
         li up - that's the live preview pipe thing you saw at the end of the screencast. It's activated with CTRL+P for pipe.
-        li I love the global alias G for "| rg" - i use that alot
-        li and much more .. but that's about the stuff I frequently use
-        li and for everyone that forgot a leading sudo from time to time - you can now answer that error with a simple #[i pleaase] :)
-
-      h2.subtitle ToDo
-      ul
-        li Find a nice alternative to SpaceVim
-        li I need to finish my script of installing all the extra tools, but finally the startup speed is very good:
+        li The rest can be found in the #[a(href="https://github.com/kakulukia/dotfiles-public/tree/main/.alias") .alias] config
+        li and for everyone that forgot a leading sudo from time to time - you can now answer that error with a simple #[span.command please] :)
+        li finally the startup speed is very good:
           figure
             img(src="benchmark.png" title="startup benchmark")
             figcaption current startup speed with all features enabled
+
+      h2.subtitle ToDo
+      ul
+        li Find a nice alternative to SpaceVim as its not going to get updates any longer
 
       h2.subtitle Credits
       p
