@@ -10,7 +10,7 @@ body
 
   .container
     .section
-      h1.title.marginless dotfiles
+      h1.title.marginless zsh 4 humans
         a(
           href="https://github.com/kakulukia/dotfiles",
           title="Go to the GitHub-Repo"
@@ -37,53 +37,57 @@ body
       h2.subtitle Intro
       p.
         For the last several years (initial commit 2014-10-04) I have been building up my shell environment and it's the
-        first thing that gets installed on a new server or Mac. Especially fasd and the reverse
+        first thing that gets installed on a new #[del server or] Mac. Especially the reverse
         history search is a huge time saver.
       p.
+        It's been along journey from default bash to oh-my-bash to oh-my-zsh to prezto and ..
+      p
+        strong z4h
+      p.
+        .. and now, apart from some tool that gets added
+        every now and then - I finnaly feel like it can't get any better. 😎
+      p.
         Some of this stuff I didn't even know was possible before I switched to ZSH or
-        found app X, so I just wanted to share the whole collection. I did a few improvements myself,
+        found app X. So I just wanted to share the whole collection. I did a few improvements myself,
         but basically it was all out there. This repo enables everybody to get all the goodies at
-        once and helps me to feel at home, whenever I open a new shell. 😎
+        once and helps me to feel at home, whenever I open a new shell.
 
       h2.subtitle Installation
       p.
-        Be sure you are logged in as the user for whom you want to install this shell
-        package and that the user has sudo rights. On OSX also make sure that #[a(href="https://brew.sh/") homebrew] is installed.
+        Yes, the installation process is a bit more tricky than the last version, BUT this only needs to be done #[strong 1] time.
+        Z4h will teleport your shell to whichever system you are logging in to. So over there you only may need to install some tools. Thats it!
 
-      .install.is-hidden-mobile
-        img(src="install_dotfiles.png")
-        .command-line
-          p
-            span.command curl
-            span.text  "https://raw.githubusercontent.com/kakulukia/dotfiles/main/misc/setup.sh"
-            span  |
-            span.command  bash
+      p
+        br
+        strong Preparing your environment:
 
-          span.icon.copy(@click="copyInstallCommand")
-            i.mdi.mdi-content-copy
+      ol
+        li Fork this dotfiles-public repo (change #[code .gitconfig] to match your username and email)
+        li Create a dotfile-private repo and let GitHub create a ReadMe to have some content to download
+        li Copy your private key to the new machine or create a new one and add it to GitHub
+        li Make sure this key is loaded by ssh if its name differs from id_rsa
+        li Make sure git is installed
+        li Use the following command to bootstrap your Mac (only tested on MacOS so far should also work on Linux tho)
+        li Make sure to change #[code GITHUB_USERNAME] to your GitHub username
 
-      img.is-hidden-tablet(src="install-mobile.png")
-      p.
-        This will install the following:
-      span.icon
-        i.mdi.mdi-signal-4g.mdi-light
+      br
+      blockquote.
+        GITHUB_USERNAME=kakulukia bash -c 'curl -fsSL "https://raw.githubusercontent.com/$GITHUB_USERNAME/dotfiles-public/main/bin/bootstrap-machine.sh" | bash'
+
+
+      br
+      p
+        strong This will do the following:
 
       ul
-        li GIT to be able to download the repo itself
-        li ZSH as your new default shell
-        li prezto
-        li Python3 (ghar is a Python script)
-        li ghar for managing the dotfiles itself (links everything into your home folder)
-        li SpaceVim
-        li fasd
-        li fzf - mainly for completion
-        li some handy aliases
-        li starship
+        li It downloads the previously created public and private repos directly to your home folder and adds .dotfiles-public/.dotfiles-private as the git dirs for those repos
+        li The next time you start your terminal it will automatically install z4h
+        li You can cycle between public, private and no repo with Ctrl+P
+          figure
+              img(src="switch_repos.png" title="switching repos")
+              figcaption cycle between the repos with Ctrl+P
+          P Now you are free to add any file under #[code $HOME] to your public or private settings and keep them.
 
-      p.
-        #[strong Note:] Use the #[span.command ~/.gitconfig-personal] file to set your git username.
-        That file is imported in #[span.command .gitconfig] so that settings can be ported via this
-        repo, but the username stays personal.
 
       p In the misc folder you can find:
       ul
@@ -94,78 +98,71 @@ body
           an opinionated set of tools (#[a(href="https://github.com/kakulukia/dotfiles/blob/master/misc/essentials.txt") these] and
           #[a(href="https://github.com/kakulukia/dotfiles/blob/master/misc/additional-stuff.sh") those])
 
-      p The dotfiles repo can be updated with the #[span.command update-dotfiles] alias.
+      p The dotfiles repo can be updated with the #[span.command sync-dotfiles] alias.
 
       h2.subtitle Features
       p Apart from what's shown in the recording, here is some more of what's included:
       ul
         li suggestions (grey text) - use the right arrow key to accept
-        li history reverse search - use the up arrow to cycle through previous commands.
-          |
-          | Anything you typed before hitting up will be used as filter and highlighted.
-          |
-          | This seriously saves a lot of typing. 😇
+        li navigate with Shift+Arrow keys
+          ul
+            li use Shift+up one dir up
+            li use Shift+Left/Right move through your parsitent path history
+            li use Shift+down to search any visited path and jump there
+        li
+          span.
+            history reverse search - use the up arrow to cycle through previous commands.
+            Anything you typed before hitting the up key will be used as a filter and be highlighted.
+            This seriously saves a lot of typing. 😇
           br
           br
           figure
-            img(src="history.png" title="context sensitive history search")
-            figcaption migr + up arrow
+            img(src="reverse_search.png" title="context sensitive history search")
+            figcaption mm + up arrow
+          p.
+            #[strong Pro tip:] add #[code # whatever tag] to your command. Next time when you decide to run it, type your tag or a part of it, press up and enter. This is how you can "tag" commands and easily find them later. You can apply more than one "tag". Technically, everything after # is a comment. (thx romkatv!)
+
         li red / green colored commands - shows that the command is (un)available
         li . is in the path so no need for any ./ prefixing executables
         li path
           ul
             li print a sorted version of $PATH
             li add the given folder to $PATH and
-            li append the given path to your .profile when called with #[span.command path --save DIR]
-        li mv - no need to type the file name twice for renaming
-        li top - is aliased to glances if installed
-        li ctop - for docker containers
+            li append the given path to your .zsh-profile when called with #[span.command path --save DIR]
+        li mv with one argument - no need to type the file name twice for renaming
         li ,, - jump to the git root dir
         li o - will open the finder in the current directory
         li
-          a(href="https://github.com/kakulukia/dotfiles/tree/master/bin") cd to.app
+          a(href="https://github.com/kakulukia/dotfiles/tree/master/bin") cdto.app
           |  - there is an app in the bin folder that provides a
-          | way to reverse the above trick and open a terminal at the current finder location.
+          | way to reverse the above trick and opens a terminal at the current finder location.
           | Use the command key to just drag it into the finders toolbar.
           br
           br
           figure
             img(src="cdto.png" title="cdto in the finder")
             figcaption The result will look like this
+        li Jsut for self reference the app next to cdto is #[a(href="https://github.com/Ji4n1ng/OpenInTerminal") OpenInTerminal]
+
         li
           a(
             href="https://github.com/kakulukia/dotfiles/tree/master/misc/QuickLook"
           ) QuickLook Plugins
-          |  - there are a few collected plugins for OSX to preview some more files like Markdown
-        li tm - there's a tmux theme and tm will reconnect to to your last session or create a new one
-          br
-          | I also changed the default prefix to CTRL+SPACE for easier usage.
+          |  - the referenced quick look plugins allstopped working - need to figure out what i installed lately to replace them. :(
         li diff - aliased to diff-so-fancy in general, not just the git version
-        li co - use fasd to launch any known file in VS Code
-        li errorcode - in general I don't see the point in displaying the error code
-          | , hence the sad smiley in the prompt, but if you really wanna know, use that alias (unless you can remember the #?)
-        li ips - will show all local ips (IPV4) / ip will show some info about your external one
+        li ips - will show all local ips (IPV4) / ip4/6 will show some info about your external one
         li ping - is aliased to prettyping
-        li go-reload - hot reload for go apps you are working on
-        li mgs - multi git status - if your company/current project totally embraces micro services (🙈)
-          |  this might come in handy to update em all in one go
         li rg - alias for "rg -S --max-columns 444" won't clutter the screen with nasty one line files
         li customize startship.toml to create a custom prompt
         li up - that's the live preview pipe thing you saw at the end of the screencast. It's activated with CTRL+P for pipe.
-        li and much more .. but that's about the stuff I frequently use :)
+        li I love the global alias G for "| rg" - i use that alot
+        li and much more .. but that's about the stuff I frequently use
+        li and for everyone that forgot a leading sudo from time to time - you can now answer that error with a simple #[i pleaase] :)
 
       h2.subtitle ToDo
       ul
-        li Decoupling this shell from needing Python. I am a Python developer, but sure it's
-          |  not really needed for the shell itself. Currently the sync tool ghar is a Python script, tho.
-        li This
-          a(href="https://www.atlassian.com/git/tutorials/dotfiles" target="_blank")  trick
-          |  looked kinda nice, i tried it, but it looked and felt messy. 🙄
-          br
-          | Im probably going to create a shell script to link my files the the HOME directory.
-        li I tried zinit and zplug, but both failed to just work without extensive care. :/
-          br
-          | But the current startup speed is not that bad:
+        li Find a nice alternative to SpaceVim
+        li I need to finish my script of installing all the extra tools, but finally the startup speed is very good:
           figure
             img(src="benchmark.png" title="startup benchmark")
             figcaption current startup speed with all features enabled
@@ -180,10 +177,10 @@ body
         a(href="https://github.com/caiogondim/bullet-train-oh-my-zsh-theme" target="_blank")  BulletTrain
         | .
         br
-        br
+        p The awesome z4h by #[a(href="https://github.com/romkatv/zsh4humans") romkatv].
         strong Generally:
         |  Mad props to all awesome devs who build most of the apps referenced here.
-        | Too many to list em all, but most if not all do feature a credit line inside the scripts.
+        | Too many to list em all, but most if not all do feature a credit line inside the scripts or a reference to their repos.
 </template>
 
 <script>
@@ -212,37 +209,24 @@ a
     color: #8a56df
     text-decoration: underline
 
-.install
-  margin: 2em 0
-  position: relative
-  .command-line
-    position: absolute
-    top: calc(50% - 10px)
-    width: 100%
-    display: grid
-    grid-template-columns: 1fr 20px
-    padding: 0 12px
-  p
-    font-size: 16px
-    .command
-      background: none
-      color: #70865B
-      padding: 0
-    .text
-      color: #A99367
-    span
-      color: white
+code
+  color: black
 
-  .icon.copy
-    color: rgba(255, 255, 255, 0.38)
-    cursor: pointer
-    &:hover
-      color: white
+blockquote
+  border-left: 4px solid #6a737d
+  margin-left: 0
+  margin-right: 0
+  padding: 1em
+  color: black
+  background-color: #f6f8fa
 
 body::-webkit-scrollbar
   width: 10px
 body::-webkit-scrollbar-thumb
   background-image: url(../public/scrollbar.png)
+html
+  scrollbar-width: thin             /* thin | auto | none */
+  scrollbar-color: #6a737d transparent /* thumb color, track color */
 
 iframe
   width: 100%
@@ -296,6 +280,9 @@ span.command
   font-style: italic
   padding: 0 5px
 
+ol
+  padding-left: 2em
+
 ul
   margin-bottom: 1em
   li:before
@@ -304,6 +291,13 @@ ul
     margin-left: -20px
   li
     padding-left: 30px
+
+    ul
+      margin-left: 1em
+      margin-top: 0.5em
+      li:before
+        content: "• "
+        margin-left: -20px
 
 p
   margin-bottom: 0.5em
