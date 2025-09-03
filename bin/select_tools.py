@@ -208,25 +208,25 @@ def ensure_rustup_and_binstall():
             print(f"Failed to install cargo-binstall: {e}")
 
 
-def ensure_npm_if_needed(selected, name_to_app):
-    """If the selection includes npm tools but npm is not available, guide the user.
+def ensure_npm_if_needed(selected, name_to_app, to_install_list):
+    """Ensure npm for npm-category tools. If npm is missing and cannot be made
+    available, skip npm tools instead of aborting the whole installation.
 
-    If `fnm` is available, offer to install a Node LTS (example: 24) and then restart this script.
-    If `fnm` is not available, show instructions and exit.
+    Returns: (filtered_to_install_list, skipped_npm_list)
+    May restart the script if Node gets installed via fnm.
     """
-    # Determine whether any selected tool belongs to the npm category
-    needs_npm = False
-    for _name in selected:
+    # Consider only the npm tools that still need installation
+    npm_candidates = []
+    for _name in to_install_list:
         meta = name_to_app.get(_name)
         if meta and meta.get("category") == "npm":
-            needs_npm = True
-            break
+            npm_candidates.append(_name)
 
-    if not needs_npm:
-        return  # nothing to do
+    if not npm_candidates:
+        return to_install_list, []  # nothing to do
 
     if shutil.which("npm"):
-        return  # npm available, proceed as usual
+        return to_install_list, []  # npm available, proceed as usual
 
     # npm missing
     if shutil.which("fnm"):
@@ -246,31 +246,32 @@ def ensure_npm_if_needed(selected, name_to_app):
             print("\nOperation cancelled by user. Exiting.")
             sys.exit(0)
 
-        if not do_install:
-            console.print("[red]npm is required for selected tools. Exiting.[/red]")
-            sys.exit(1)
+        if do_install:
+            try:
+                # Install and activate Node 24 for the current shell session
+                subprocess.run(["sh", "-c", "fnm install 24 && fnm use 24"], check=True)
+            except subprocess.CalledProcessError as e:
+                console.print(f"[red]Failed to install/use Node via fnm: {e}[/red]")
+                # fall through to skipping npm tools
+            else:
+                # Restart so that npm is visible to this process
+                if shutil.which("uv"):
+                    os.execvp("uv", ["uv", "run", "--script", __file__, *sys.argv[1:]])
+                else:
+                    os.execv(sys.executable, [sys.executable, __file__, *sys.argv[1:]])
 
-        try:
-            # Install and activate Node 24 for the current shell session
-            subprocess.run(["sh", "-c", "fnm install 24 && fnm use 24"], check=True)
-        except subprocess.CalledProcessError as e:
-            console.print(f"[red]Failed to install/use Node via fnm: {e}[/red]")
-            sys.exit(1)
-
-        # Try to restart this script so the new npm is picked up
-        if shutil.which("uv"):
-            os.execvp("uv", ["uv", "run", "--script", __file__, *sys.argv[1:]])
-        else:
-            os.execv(sys.executable, [sys.executable, __file__, *sys.argv[1:]])
-
-    # fnm not found -> instruct and exit
-    console.print(Panel.fit(
-        "npm is not available and fnm is not installed.\n"
-        "Please install fnm, then run:\n\n  fnm install 24\n  fnm use 24\n\nThen start this script again.",
-        title="Node.js required",
-        style="red"
-    ))
-    sys.exit(1)
+    # At this point, npm still not available -> skip npm tools
+    skipped = npm_candidates
+    if skipped:
+        console.print(Panel.fit(
+            "npm is not available. The following npm tools will be skipped:\n\n  - "
+            + "\n  - ".join(skipped)
+            + "\n\nYou can install Node with fnm (e.g. `fnm install 24 && fnm use 24`) and rerun this script.",
+            title="Skipping npm tools",
+            style="red",
+        ))
+    filtered = [n for n in to_install_list if n not in skipped]
+    return filtered, skipped
 
 
 # Detect system package manager early and request sudo once if needed
@@ -400,7 +401,15 @@ while True:
         sys.exit(0)
 
     # Ensure npm is available if npm tools are selected; may restart the script
-    ensure_npm_if_needed(selected, name_to_app)
+    to_install_list, skipped_npm = ensure_npm_if_needed(selected, name_to_app, to_install_list)
+
+    # If everything (non-npm) is already installed after filtering, exit with info
+    if not to_install_list:
+        if skipped_npm:
+            console.print("[yellow]Only npm tools were pending and have been skipped due to missing npm. Exiting.[/yellow]")
+        else:
+            console.print("[green]All selected tools are already installed. Nothing to do. Exiting.[/green]")
+        sys.exit(0)
 
     # Offer to proceed, change selection, or cancel
     try:
