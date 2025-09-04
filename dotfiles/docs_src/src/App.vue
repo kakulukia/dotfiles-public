@@ -40,14 +40,14 @@ body
         first thing that gets installed on a new #[del server or] Mac. Especially the reverse
         history search is a huge time saver.
       p.
-        It's been along journey from default bash to oh-my-bash to oh-my-zsh to prezto and ..
+        It's been along journey from default bash to bash-it, oh-my-bash to oh-my-zsh to prezto and ..
       p
         strong z4h
       p.
         .. and now, apart from some tool that gets added
         every now and then - I finnaly feel like it can't get any better. 😎
       p.
-        Some of this stuff I didn't even know was possible before I switched to ZSH or
+        Some of the stuff in this repo I didn't even know was possible before I switched to ZSH or
         found app X. So I just wanted to share the whole collection. I did a few improvements myself,
         but basically it was all out there. This repo enables everybody to get all the goodies at
         once and helps me to feel at home, whenever I open a new shell.
@@ -86,18 +86,17 @@ body
           figure
               img(src="switch_repos.png" title="switching repos")
               figcaption cycle between the repos with Ctrl+P
-          p Now you are free to add any file under #[code $HOME] to your public or private settings and keep them.
-
+      p Now you are free to add any file under #[code $HOME] to your public or private settings and keep them.
 
       p In the misc folder you can find:
       ul
-        li the Powerline patched SourceCode font (you may use any #[a(href="https://www.nerdfonts.com/" target="_blank") Nerdfont])
+        li The Powerline patched SourceCode font (you may use any #[a(href="https://www.nerdfonts.com/" target="_blank") Nerdfont])
         li better-osx-settings script
         li.
-          an opinionated set of #[a(href="https://github.com/kakulukia/dotfiles-public/blob/main/bin/apps.json") tools] the can be
-          installed with #[span.command select-tools]
+          An opinionated set of #[a(href="https://github.com/kakulukia/dotfiles-public/blob/main/bin/apps.json") tools] that can be
+          installed via #[span.command select-tools]
 
-      p The dotfiles repo can be updated with the #[span.command sync-dotfiles] alias.
+      p Your settings (public and private) can be updated via #[span.command sync-dotfiles]
 
       h2.subtitle Features
       p Apart from what's shown in the recording, here is some more of what's included:
@@ -105,9 +104,9 @@ body
         li suggestions (grey text) - use the right arrow key to accept
         li navigate with Shift+Arrow keys
           ul
-            li use Shift+up one dir up
-            li use Shift+Left/Right move through your parsitent path history
-            li use Shift+down to search any visited path and jump there
+            li Shift+up → dir up
+            li Shift+down → search any visited path and jump there
+            li Shift+Left/Right → cycle through your persistent path history
         li
           span.
             history reverse search - use the up arrow to cycle through previous commands.
@@ -153,11 +152,11 @@ body
         li ping - is aliased to prettyping
         li rg - alias for "rg -S --max-columns 444" won't clutter the screen with nasty one line files
         li I love the global alias G for "| rg" - i use that alot
-        li customize startship.toml to create a custom prompt
+        li A customized startship.toml for a minimal prompt
         li up - that's the live preview pipe thing you saw at the end of the screencast. It's activated with CTRL+P for pipe.
         li The rest can be found in the #[a(href="https://github.com/kakulukia/dotfiles-public/tree/main/.alias") .alias] config
-        li and for everyone that forgot a leading sudo from time to time - you can now answer that error with a simple #[span.command please] :)
-        li finally the startup speed is very good:
+        li For everyone who forgets a leading sudo from time to time - you can now answer that error with a simple #[span.command please] (just do it) :)
+        li And finally the startup speed is very good:
           figure
             img(src="benchmark.png" title="startup benchmark")
             figcaption current startup speed with all features enabled
