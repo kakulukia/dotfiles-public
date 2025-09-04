@@ -10,9 +10,9 @@ return {
         enabled = true,
         auto_trigger = true,
         keymap = {
-          accept = "<Right>", -- Vorschlag annehmen mit Pfeil nach rechts
-          next = "<C-Right>", -- nächster Vorschlag mit Strg + Pfeil nach rechts
-          prev = "<C-Left>", -- vorheriger Vorschlag mit Strg + Pfeil nach links
+          accept = "<C-Right>", -- Vorschlag annehmen mit Pfeil nach rechts
+          next = "<C-Up>", -- nächster Vorschlag mit Strg + Pfeil nach rechts
+          prev = "<C-Down>", -- vorheriger Vorschlag mit Strg + Pfeil nach links
           dismiss = "<Esc>", -- Vorschlag ausblenden mit Esc
         },
       },

@@ -3,13 +3,9 @@
     "cmd": "install",
     "apps": [
       { "name": "curl", "default": true, "desc": "curl" },
-      {
-        "name": "direnv",
-        "default": false,
-        "desc": "Environment variable manager"
-      },
       { "name": "git", "default": true, "desc": "Version control" },
       { "name": "jq", "default": true, "desc": "JSON Parser" },
+      { "name": "lazygit", "default": true, "desc": "Termin Git client" },
       { "name": "moor", "default": true, "desc": "less alternative" },
       { "name": "rsync", "default": true, "desc": "ignore apples openrsync" },
       { "name": "wget", "default": true, "desc": "Web-Downloader" },
@@ -21,6 +17,7 @@
         "desc": "GNU Coreutils (gdate, etc.)",
         "cmd": "gdate"
       },
+      { "name": "direnv", "default": false, "desc": "Environment variable manager" },
       {
         "name": "fastfetch",
         "default": false,
