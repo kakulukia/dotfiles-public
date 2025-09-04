@@ -19,6 +19,8 @@ zstyle ':z4h:*'                              channel            testing
 zstyle ':z4h:term-title:ssh'                 precmd             '%n@'${${${Z4H_SSH##*:}//\%/%%}:-%m}': %~'
 zstyle ':z4h:term-title:ssh'                 preexec            '%n@'${${${Z4H_SSH##*:}//\%/%%}:-%m}': ${1//\%/%%}'
 zstyle ':z4h:direnv'                         enable             yes
+# Show "loading" and "unloading" notifications from direnv.
+zstyle ':z4h:direnv:success'                 notify             'yes'
 zstyle ':completion:*'                       verbose yes
 zstyle ':z4h:fzf-complete'                   recurse-dirs       'yes'
 zstyle ':z4h:*'                              fzf-flags          --color=hl:11,hl+:11
@@ -38,11 +40,14 @@ zstyle ':completion:*'                       add-space          false
 zstyle ':completion:*'                       squeeze-slashes    true
 zstyle ':completion:*'                       completer          _complete
 zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*:ssh:argument-1:'       tag-order    hosts users
+zstyle ':completion:*:scp:argument-rest:'    tag-order    hosts files users
+zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias'
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias ' 
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'

@@ -100,6 +100,7 @@ alias -g P="|& up"
 alias gs='git status -s'
 # show a nice version of the git graph
 alias gg="git log --remotes --tags --oneline --decorate --stat --abbrev-commit --date=relative --branches --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n'"
+alias lg="lazygit"
 alias gf='git fetch --all --prune'
 alias ga='git add'
 alias gl='git pull'
