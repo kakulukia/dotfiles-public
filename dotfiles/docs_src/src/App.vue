@@ -55,7 +55,7 @@ body
       h2.subtitle Installation
       p.
         Yes, the installation process is a bit more tricky than the last version, BUT this only needs to be done #[strong 1] time.
-        Z4h will teleport your shell to whichever system you are logging in to. So over there you only may need to install some tools. Thats it!
+        Z4h will #[a(href="https://asciinema.org/a/542763") teleport] your shell to whichever system you are logging in to. So over there you only may need to install some tools. Thats it!
 
       p
         br
@@ -156,14 +156,15 @@ body
         li up - that's the live preview pipe thing you saw at the end of the screencast. It's activated with CTRL+P for pipe.
         li The rest can be found in the #[a(href="https://github.com/kakulukia/dotfiles-public/tree/main/.alias") .alias] config
         li For everyone who forgets a leading sudo from time to time - you can now answer that error with a simple #[span.command please] (just do it) :)
+        li #[a(href="https://github.com/LazyVim/LazyVim") LazyVim] is making editing in the terminal a pleasure
         li And finally the startup speed is very good:
           figure
             img(src="benchmark.png" title="startup benchmark")
             figcaption current startup speed with all features enabled
 
       h2.subtitle ToDo
-      ul
-        li Find a nice alternative to SpaceVim as its not going to get updates any longer
+      ul 
+        li This list is finally empty :)
 
       h2.subtitle Credits
       p
