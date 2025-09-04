@@ -12,7 +12,7 @@ body
     .section
       h1.title.marginless zsh 4 humans
         a(
-          href="https://github.com/kakulukia/dotfiles",
+          href="https://github.com/kakulukia/dotfiles-public",
           title="Go to the GitHub-Repo"
         )
           img.github(src="github.png")
@@ -66,7 +66,7 @@ body
         li Create a dotfile-private repo and let GitHub create a ReadMe to have some content to download
         li Copy your private key to the new machine or create a new one and add it to GitHub
         li Make sure this key is loaded by ssh if its name differs from id_rsa
-        li Make sure git is installed
+        li Make sure #[strong git, zsh, python, curl] and the #[strong build-essential package] (for installing extra tools) is installed
         li Use the following command to bootstrap your Mac (only tested on MacOS so far should also work on Linux tho)
         li Make sure to change #[code GITHUB_USERNAME] to your GitHub username
 
@@ -86,7 +86,7 @@ body
           figure
               img(src="switch_repos.png" title="switching repos")
               figcaption cycle between the repos with Ctrl+P
-          P Now you are free to add any file under #[code $HOME] to your public or private settings and keep them.
+          p Now you are free to add any file under #[code $HOME] to your public or private settings and keep them.
 
 
       p In the misc folder you can find:
