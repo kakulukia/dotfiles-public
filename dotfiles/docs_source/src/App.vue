@@ -32,7 +32,7 @@ body
           title="Go to the GitHub-Repo"
         )
           img.github(src="github.png")
-      a.claim(href="https://ohmyz.sh/", target="_blank") Your terminal never felt #[i this] good before.™
+      a.claim(href="https://github.com/romkatv/zsh4humans", target="_blank") Your terminal never felt #[i this] good before.
     .section
       asciinema-player#player.is-hidden-mobile(
         v-pre,
