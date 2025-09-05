@@ -56,22 +56,22 @@ body
         first thing that gets installed on a new #[del server or] Mac. Especially the reverse
         history search is a huge time saver.
       p.
-        It's been along journey from default bash to bash-it, oh-my-bash to oh-my-zsh to prezto and ..
+        It's been a long journey from default bash to bash-it, oh-my-bash, then oh-my-zsh, to prezto, and…
       p
         strong z4h
       p.
-        .. and now, apart from some tool that gets added
-        every now and then - I finnaly feel like it can't get any better. 😎
+        …and now, apart from some tool that gets added
+        every now and then — I finally feel like it can't get any better. 😎
       p.
         Some of the stuff in this repo I didn't even know was possible before I switched to ZSH or
-        found app X. So I just wanted to share the whole collection. I did a few improvements myself,
+        discovered app X. So I just wanted to share the whole collection. I did a few improvements myself,
         but basically it was all out there. This repo enables everybody to get all the goodies at
-        once and helps me to feel at home, whenever I open a new shell.
+        once and helps me feel at home whenever I open a new shell.
 
       h2.subtitle Installation
       p.
         Yes, the installation process is a bit more tricky than the last version, BUT this only needs to be done #[strong 1] time.
-        Z4h will #[a(href="https://asciinema.org/a/542763") teleport] your shell to whichever system you are logging in to. So over there you only may need to install some tools. Thats it!
+        Z4h will #[a(href="https://asciinema.org/a/542763") teleport] your shell to whichever system you are logging in to. So over there you only may need to install some tools. That's it!
 
       p
         br
@@ -83,7 +83,7 @@ body
         li Copy your private key to the new machine or create a new one and add it to GitHub
         li Make sure this key is loaded by ssh if its name differs from id_rsa
         li Make sure #[strong git, zsh, python, curl] and the #[strong build-essential package] (for installing extra tools) is installed
-        li Use the following command to bootstrap your Mac (only tested on MacOS so far should also work on Linux tho)
+        li Use the following command to bootstrap your Mac (only tested on macOS so far; should also work on Linux though)
         li Make sure to change #[code GITHUB_USERNAME] to your GitHub username
 
       br
@@ -149,26 +149,26 @@ body
         li
           a(href="https://github.com/kakulukia/dotfiles-public/tree/main/bin") cdto.app
           |  - there is an app in the bin folder that provides a
-          | way to reverse the above trick and opens a terminal at the current finder location.
-          | Use the command key to just drag it into the finders toolbar.
+          | way to reverse the above trick and opens a terminal at the current Finder location.
+          | Use the Command key to just drag it into the Finder's toolbar.
           br
           br
           figure
             img(src="cdto.png" title="cdto in the finder")
             figcaption The result will look like this
-        li Jsut for self reference the app next to cdto is #[a(href="https://github.com/Ji4n1ng/OpenInTerminal") OpenInTerminal]
+        li Just for self-reference the app next to cdto is #[a(href="https://github.com/Ji4n1ng/OpenInTerminal") OpenInTerminal]
 
         li
           a(
             href="https://github.com/chamburr/glance"
           ) QuickLook Plugins
-          span  for OSX
+          span  for macOS
         li diff - aliased to diff-so-fancy in general, not just the git version
         li ips - will show all local ips (IPV4) / ip[4|6] will show some info about your external one
         li ping - is aliased to prettyping
         li rg - alias for "rg -S --max-columns 444" won't clutter the screen with nasty one line files
-        li I love the global alias G for "| rg" - i use that alot
-        li A customized startship.toml for a minimal prompt
+        li I love the global alias G for "| rg" — I use that a lot
+        li A customized starship.toml for a minimal prompt
         li up - that's the live preview pipe thing you saw at the end of the screencast. It's activated with CTRL+P for pipe.
         li The rest can be found in the #[a(href="https://github.com/kakulukia/dotfiles-public/tree/main/.alias") .alias] config
         li For everyone who forgets a leading sudo from time to time - you can now answer that error with a simple #[span.command please] (just do it) :)
