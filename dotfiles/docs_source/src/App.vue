@@ -1,12 +1,28 @@
 <template lang="pug">
 body
   .pizza.is-hidden-mobile
-    a(href="https://www.paypal.me/AndyGrabow/3", target="_blank")
+    a(@click.prevent="showLightning = true")
       img(src="pizza.png")
       div
         span If you like it
         br
         span buy me a pizza :)
+
+  // Modal für Lightning QR
+  .lightning-modal-overlay(v-if="showLightning" @click.self="showLightning = false")
+    .lightning-modal
+      button.lightning-close(@click="showLightning = false" aria-label="Close") ×
+      img.qr(src="tip_lightning_code.svg" alt="Lightning QR Code")
+      h3 Oh, what kind of pizza is this? A lightning-fast one! ⚡️🍕
+      p.
+        This QR code is a Lightning address. Open your wallet, scan it, and send a few sats — like a tip,
+        only faster than the oven preheats.
+      p.
+        Lightning is Bitcoin's turbo change: cheap, fast, and hassle-free.
+      p.
+        New to Lightning? A quick five-minute dive might be the most valuable use of your time today.
+      p.
+        Got ~44 minutes? #[a(href="https://www.youtube.com/watch?v=Pef22g53zsg", target="_blank") Here is a great introduction by Jack Mallers].
 
   .container
     .section
@@ -163,7 +179,7 @@ body
             figcaption current startup speed with all features enabled
 
       h2.subtitle ToDo
-      ul 
+      ul
         li This list is finally empty :)
 
       h2.subtitle Credits
@@ -184,14 +200,23 @@ body
 
 <script>
 export default {
+  data() {
+    return {
+      showLightning: false
+    }
+  },
   mounted() {
     let asciinema = document.createElement("script");
     asciinema.setAttribute("src", "asciinema-player.js");
     document.head.appendChild(asciinema);
+    window.addEventListener('keydown', this.onKeydown)
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.onKeydown)
   },
   methods: {
-    copyInstallCommand () {
-      navigator.clipboard.writeText('curl "https://raw.githubusercontent.com/kakulukia/dotfiles/main/misc/setup.sh" | bash')
+    onKeydown (e) {
+      if (e.key === 'Escape') this.showLightning = false
     }
   }
 };
@@ -354,4 +379,42 @@ h2, h3
   align-items: center
   margin: 0 auto
   justify-content: center
+
+// Styles für Lightning-Modal
+.lightning-modal-overlay
+  position: fixed
+  inset: 0
+  background: rgba(0,0,0,0.6)
+  display: flex
+  align-items: center
+  justify-content: center
+  z-index: 9999
+
+.lightning-modal
+  background: #fff
+  color: #333
+  border-radius: 10px
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3)
+  width: 80vw
+  max-height: 90vh
+  overflow: auto
+  padding: 22px 22px 18px
+  position: relative
+
+.lightning-close
+  appearance: none
+  background: transparent
+  border: 0
+  font-size: 24px
+  line-height: 1
+  cursor: pointer
+  position: absolute
+  top: 8px
+  right: 10px
+
+img.qr
+  display: block
+  height: 210px
+  max-width: 70vw
+  margin: 10px auto 18px
 </style>
