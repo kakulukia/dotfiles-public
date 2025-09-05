@@ -1,6 +1,9 @@
 # are we fast yet? - show benchmarks via: ZPROF=1 zsh -i -c exit
 [ -z "$ZPROF" ] || zmodload zsh/zprof
 
+# Prevent AppleDouble/resource-fork sidecar files during copy operations on macOS
+export COPYFILE_DISABLE=1
+
 # export FZF_DEFAULT_OPTS="--exact --no-sort --case=smart"
 # export FZF_DEFAULT_COMMAND='fd --type d --hidden'
   # zstyle ':z4h:command-not-found' to-file                "$TTY"
@@ -47,7 +50,7 @@ zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias ' 
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' 
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'
