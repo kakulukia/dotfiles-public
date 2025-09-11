@@ -89,7 +89,7 @@ alias fda="fd --hidden --no-ignore"
 # Globals
 alias -g G="| rg -v 'rg -S' | rg "
 alias -g GC="| rg -v 'rg -S' | rg -C 5 "
-alias -g L="| moar"
+alias -g L="| less"
 alias -g J="| jq"
 alias -g C="| wc -l"
 alias -g F="| fzf --multi"
@@ -172,7 +172,7 @@ alias wi="which --full"
 alias stree='open -a SourceTree .'
 alias wetter='curl wttr.in/Berlin'
 alias tm='tmux attach || tmux new'
-alias getmp3="youtube-dl -x --audio-format mp3 "
+alias getmp3="yt-dlp -x --audio-format mp3 "
 
 gpt() { sgpt "$*" }
 gpts() { sgpt -s "$*" }
@@ -192,7 +192,7 @@ sleep-in() { echo "Going to  sleep in $1 minutes .." && sleep $((60 * $1)) && pm
 (( $+commands[gsed] )) && alias sed="gsed"
 (( $+commands[gtar] )) && alias tar="gtar"
 (( $+commands[gdate] )) && alias date="gdate"
-(( $+commands[moar] )) && alias less="moor"
+(( $+commands[moor] )) && alias less="moor"
 (( $+commands[nvim] )) && alias vim="nvim"
 
 upify() {
