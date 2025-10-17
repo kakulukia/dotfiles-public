@@ -61,6 +61,7 @@ if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   zstyle ':z4h:powerlevel10k' channel none
 fi
 
+z4h install romkatv/archive romkatv/zsh-prompt-benchmark
 
 # HIER GEHTS LOS
 #######################################

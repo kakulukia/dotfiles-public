@@ -8,7 +8,6 @@
   "workbench.iconTheme": "eq-material-theme-icons-palenight",
   "files.trimTrailingWhitespace": true,
   "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
   "editor.wordWrap": "on",
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter-notebook"

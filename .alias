@@ -5,6 +5,7 @@ if command -v lsd >/dev/null 2>&1; then
     alias ll='lsd -gal'
     alias lt='lsd -gltr'
     alias llt='lsd -galtr'
+    alias ls="lsd -glSr"
 else
     alias l='ls -Flh'
     alias ll='ls -Flah'
