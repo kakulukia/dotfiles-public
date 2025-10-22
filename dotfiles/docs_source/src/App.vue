@@ -275,6 +275,7 @@ img.github
   position: relative
   top: 4px
 .pizza
+  display: none
   height:
   z-index: 1
   position: absolute
