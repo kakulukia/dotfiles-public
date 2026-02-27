@@ -218,14 +218,14 @@ alias rs="manage.py runserver 0.0.0.0:8000"
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __pycache__ -print -delete && find . -name '*.pyc' -ls -delete"
 # Shortened python
 alias py{,3}=python3
-# Lazy-init fnm on first Node-related command
-for cmd in node npm npx yarn pm2 fnm; do
-  eval "function $cmd {\
-    unset -f node npm npx yarn pm2 fnm;\
-    eval \"\$(fnm env --use-on-cd --shell zsh)\";\
-    command $cmd \"\$@\";\
-  }"
-done
+# # Lazy-init fnm on first Node-related command
+# for cmd in node npm npx yarn pm2 fnm; do
+#   eval "function $cmd {\
+#     unset -f node npm npx yarn pm2 fnm;\
+#     eval \"\$(fnm env --use-on-cd --shell zsh)\";\
+#     command $cmd \"\$@\";\
+#   }"
+# done
 alias aid='PYTHONPATH="$(python -c "import site; print(site.getsitepackages()[-1])")" aider --no-auto-commits --model o4-mini'
 
 ### NETWORK ################################################################
@@ -252,4 +252,5 @@ alias get='curl --continue-at - --location --progress-bar --remote-name --remote
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-alias info="fastfetch"
+(( $+commands[neofetch] )) && alias info="neofetch"
+(( $+commands[fastfetch] )) && alias info="fastfetch"

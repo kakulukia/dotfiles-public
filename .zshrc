@@ -50,7 +50,7 @@ zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' '~/bin/select-tools' '~/bin/apps.json' 
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' '~/bin/select-tools' '~/bin/apps.json' '~/.config/starship.toml' '~/.gitconfig'
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'
@@ -81,7 +81,8 @@ autoload -Uz -- zmv archive lsarchive unarchive ~/dotfiles/functions/[^_]*(N:t)
 
 
 export EDITOR=nvim
-export PAGER=moar
+export PAGER=less
+(( $+commands[moor] )) && export PAGER=moor
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_ENV_HINTS=1
 export SYSTEMD_LESS=moar
@@ -153,7 +154,8 @@ fi
 z4h source -c -- $ZDOTDIR/.alias
 z4h source -c -- $ZDOTDIR/.zsh-profile  # for local changes that wont be synced
 z4h source -c -- $ZDOTDIR/.zshrc-private
-z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.alias,.zshrc-private}
+z4h source -c -- $ZDOTDIR/.fnm-config
+z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.alias,.zshrc-private,.fnm-config}
 
 # show benchmark results
 [ -z "$ZPROF" ] || zprof

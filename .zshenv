@@ -7,6 +7,7 @@ if [ -n "${ZSH_VERSION-}" ]; then
   setopt no_global_rcs
   [[ ! -e ~/.zshenv-private ]] || source ~/.zshenv-private
   if [[ -o no_interactive && -z "${Z4H_BOOTSTRAPPING-}" ]]; then
+    [[ ! -e ~/.fnm-config ]] || source ~/.fnm-config
     return
   fi
   setopt no_rcs

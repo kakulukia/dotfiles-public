@@ -1,17 +1,22 @@
 {
   "system": {
-    "cmd": "install", "apps": [
+    "cmd": "install",
+    "apps": [
       { "name": "curl", "default": true, "desc": "curl" },
-      { "name": "direnv", "default": true, "desc": "Environment variable manager"},
+      { "name": "direnv", "default": true, "desc": "Environment variable manager" },
       { "name": "git", "default": true, "desc": "Version control" },
       { "name": "jq", "default": true, "desc": "JSON Parser" },
       { "name": "moor", "default": true, "desc": "less alternative" },
       { "name": "rsync", "default": true, "desc": "ignore apples openrsync" },
       { "name": "wget", "default": true, "desc": "Web-Downloader" },
-
       { "name": "cloc", "default": false, "desc": "Count Lines of Code" },
       { "name": "coreutils", "default": false, "desc": "GNU Coreutils (gdate, etc.)", "cmd": "gdate" },
-      { "name": "fastfetch", "default": false, "desc": "Systeminfo (install manually under Ubuntu or use neofetch)", "comment": "Ubuntu needs to install ppa:zhangsongcui3371/fastfetch" },
+      {
+        "name": "fastfetch",
+        "default": false,
+        "desc": "Systeminfo (install manually under Ubuntu or use neofetch)",
+        "comment": "Ubuntu needs to install ppa:zhangsongcui3371/fastfetch"
+      },
       { "name": "neofetch", "default": false, "desc": "Systeminfo (for older systems)" },
       { "name": "ddgr", "default": false, "desc": "DuckDuckGo CLI" },
       { "name": "dos2unix", "default": false, "desc": "Line-Endings converter" },
@@ -33,9 +38,9 @@
       { "name": "yt-dlp", "default": false, "desc": "YouTube Downloader" }
     ]
   },
-
   "cargo": {
-    "cmd": "binstall -y", "apps": [
+    "cmd": "binstall -y",
+    "apps": [
       { "name": "bat", "default": true, "desc": "Cat with syntax highlighting" },
       { "name": "bottom", "default": true, "desc": "Modern top/htop alternative", "cmd": "btm" },
       { "name": "cargo-update", "default": true, "desc": "Cargo package update support", "cmd": "cargo-install-update" },
@@ -49,7 +54,6 @@
       { "name": "tealdeer", "default": true, "desc": "Better manuals with tldr", "cmd": "tldr" },
       { "name": "starship", "default": true, "desc": "Cross-shell prompt" },
       { "name": "zoxide", "default": true, "desc": "fasd for directories" },
-
       { "name": "broot", "default": false, "desc": "Dateisystem-Navigation" },
       { "name": "git-delta", "default": false, "desc": "Verbessertes Git-Diff", "cmd": "delta" },
       { "name": "hyperfine", "default": false, "desc": "Benchmarking Tool" },
@@ -57,29 +61,30 @@
       { "name": "skim", "default": false, "desc": "Fuzzy Finder (fzf-Alternative)", "cmd": "sk" }
     ]
   },
-
   "uv": {
-    "cmd": "tool install", "apps": [
+    "cmd": "tool install",
+    "apps": [
       { "name": "httpie", "default": true, "desc": "User friendly HTTP CLI" },
       { "name": "poetry", "default": true, "desc": "Still my default package manger" },
       { "name": "shell-gpt", "default": true, "desc": "Chat GPT for the command line", "cmd": "sgpt" },
       { "name": "ipython", "default": true, "desc": "Better Python shell" },
       { "name": "magic-wormhole", "default": true, "desc": "Get things from one computer to another, safely.", "cmd": "wormhole" },
-
       { "name": "cookiecutter", "default": false, "desc": "Coding project template tool" },
       { "name": "http-prompt", "default": false, "desc": "Interaktive HTTP-Shell" },
-      { "name": "pgcli", "default": false, "desc": "Interaktiver Postgres Client" }
+      { "name": "pgcli", "default": false, "desc": "Interaktiver Postgres Client" },
+      { "name": "sqlit-tui", "default": false, "desc": "The lazygit of SQL databases.", "cmd": "sqlit" }
     ]
   },
-
   "npm": {
-    "cmd": "install -g", "apps": [
+    "cmd": "install -g",
+    "apps": [
       { "name": "sass", "default": false, "desc": "dart-sass" },
       { "name": "fkill-cli", "default": false, "desc": "Prozesse komfortabel beenden", "cmd": "fkill" },
-      { "name": "@openai/codex", "default": false, "desc": "Chat GPT coding environment", "cmd": "codex"},
+      { "name": "@openai/codex", "default": false, "desc": "Chat GPT coding environment", "cmd": "codex" },
       { "name": "carbon-now-cli", "default": false, "desc": "Code-Screenshots aus der CLI", "cmd": "carbon-now" },
       { "name": "iponmap", "default": false, "desc": "Eigene IP-Adresse auf Karte" },
       { "name": "mapscii", "default": false, "desc": "Interaktive Weltkarte in ASCII" },
+      { "name": "pm2", "default": false, "desc": "Process manager 2" },
       { "name": "rename-cli", "default": false, "desc": "Dateien einfach umbenennen", "cmd": "rename" }
     ]
   }
