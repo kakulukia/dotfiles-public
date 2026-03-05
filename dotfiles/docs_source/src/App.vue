@@ -12,7 +12,7 @@ body
   .lightning-modal-overlay(v-if="showLightning" @click.self="showLightning = false")
     .lightning-modal
       button.lightning-close(@click="showLightning = false" aria-label="Close") ×
-      img.qr(src="tip_lightning_code.svg" alt="Lightning QR Code")
+      img.qr(src="tip_lightning_code.png" alt="Lightning QR Code")
       h3 Oh, what kind of pizza is this? A lightning-fast one! ⚡️🍕
       p.
         This QR code is a Lightning address. Open your wallet, scan it, and send a few sats — like a tip,
@@ -275,7 +275,6 @@ img.github
   position: relative
   top: 4px
 .pizza
-  display: none
   height:
   z-index: 1
   position: absolute
