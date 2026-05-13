@@ -212,8 +212,8 @@ bindkey 'π' upify    # Alt+u
 
 ### PYTHON / DJANGO / NODE ########################################################
 alias ipy="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
-alias shell='python manage.py shell_plus'
-alias rs="manage.py runserver 0.0.0.0:8000"
+alias shell='python manage.py shell'
+alias rs="manage.py runserver 0.0.0.0:8000 --nostatic"  # nostatic lets whitenoise handle the static files (a bit better than django does)
 # Recursively delete .DS_Store and __pycache__ files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __pycache__ -print -delete && find . -name '*.pyc' -ls -delete"
 # Shortened python

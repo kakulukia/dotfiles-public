@@ -50,7 +50,7 @@ zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' '~/bin/select-tools' '~/bin/apps.json' '~/.config/starship.toml' '~/.gitconfig'
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' '~/bin/select-tools' '~/bin/apps.json' '~/.config/starship.toml' '~/.gitconfig' '~/bin/diff-so-fancy' '~/.config/lsd'
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'
@@ -141,14 +141,15 @@ z4h bindkey z4h-fzf-dir-history Alt+Down
 # Check if starship is installed
 if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   # Check if cache file exists
-  if [[ ! -f ~/.cache/starship-init.zsh ]]; then
-    echo "Creating Starship init cache..."
+  if [[ ! -s ~/.cache/starship-init.zsh ]]; then
+    echo "Rebuilding Starship init cache..."
     mkdir -p ~/.cache
     starship init zsh > ~/.cache/starship-init.zsh
   fi
 
   # Load cached initialization with z4h
   z4h source -c -- ~/.cache/starship-init.zsh
+  unset RPS1 RPROMPT
 fi
 
 z4h source -c -- $ZDOTDIR/.alias

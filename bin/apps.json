@@ -18,11 +18,11 @@
         "comment": "Ubuntu needs to install ppa:zhangsongcui3371/fastfetch"
       },
       { "name": "neofetch", "default": false, "desc": "Systeminfo (for older systems)" },
-      { "name": "ddgr", "default": false, "desc": "DuckDuckGo CLI" },
       { "name": "dos2unix", "default": false, "desc": "Line-Endings converter" },
       { "name": "glance-chamburr", "default": false, "desc": "All-in-one Quick Look plugin (OSX only)" },
       { "name": "gnu-sed", "default": false, "desc": "GNU sed for OSX", "cmd": "gsed" },
       { "name": "irssi", "default": false, "desc": "IRC client" },
+      { "name": "lazygit", "default": false, "desc": "CLI Git client" },
       { "name": "mosh", "default": false, "desc": "Mobile Shell (explicitly for instable connections)" },
       { "name": "ngrok", "default": false, "desc": "Make your ports public" },
       { "name": "nmap", "default": false, "desc": "Network scanner" },

@@ -12,6 +12,7 @@ $directory\
 $cmd_duration """
 add_newline = false
 
+# A lone $ is the Starship character prompt hinting for l local stash entry.
 [character]
 success_symbol = ''
 error_symbol = '[ :\( ](bg:red fg:bright-white)'
