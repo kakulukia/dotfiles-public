@@ -243,7 +243,6 @@ function server() {
     python -m http.server ${port}
 }
 # get public/local IP addresses
-alias ip="curl -s https://ifconfig.co/json J"
 alias ip4="curl -4 -s https://ifconfig.co/json J"
 alias ip6="curl -6 -s https://ifconfig.co/json J"
 alias ips="ifconfig -a | grep -o 'inet\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet? (addr:)? ?/, \"\"); print }' | grep -v 127.0.0.1"
@@ -254,3 +253,5 @@ alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 (( $+commands[neofetch] )) && alias info="neofetch"
 (( $+commands[fastfetch] )) && alias info="fastfetch"
+
+alias -s app='open'

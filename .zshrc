@@ -42,7 +42,8 @@ zstyle ':completion:*'                       insert-slash       true
 zstyle ':completion:*'                       add-space          false
 zstyle ':completion:*'                       squeeze-slashes    true
 zstyle ':completion:*'                       completer          _complete
-zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*' 'm:{a-zA-Z}={A-Za-z} l:|=* r:|=*'
 zstyle ':completion:*:ssh:argument-1:'       tag-order    hosts users
 zstyle ':completion:*:scp:argument-rest:'    tag-order    hosts files users
 zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
@@ -80,7 +81,7 @@ fpath=($Z4H/romkatv/archive $fpath)
 autoload -Uz -- zmv archive lsarchive unarchive ~/dotfiles/functions/[^_]*(N:t)
 
 
-export EDITOR=nvim
+export EDITOR=vim
 export PAGER=less
 (( $+commands[moor] )) && export PAGER=moor
 export HOMEBREW_NO_ANALYTICS=1
