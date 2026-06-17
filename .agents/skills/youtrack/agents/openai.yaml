@@ -1,0 +1,3 @@
+display_name: YouTrack
+short_description: Read YouTrack issues and extract actionable coding tasks.
+default_prompt: Pull YouTrack issue details, summarize what to implement, and proceed with code changes when requested.

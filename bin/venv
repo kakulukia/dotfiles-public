@@ -1,54 +1,221 @@
 #!/usr/bin/env bash
-# Dieses Script erstellt ein neues uv-verwaltetes virtuelles Environment (venv)
-# Es fragt zunächst ab, welche der aktuell installierten (verwalteten) Python-Versionen genutzt werden soll.
-# Anschließend wird das venv mit --seed angelegt (sodass pip vorinstalliert wird)
-# und eine .envrc erzeugt, die direnv beim Betreten des Verzeichnisses das venv automatisch aktiviert.
+# Initialize a uv project in the current directory, including .venv and .envrc.
 
 set -euo pipefail
 
-# Prüfen, ob uv verfügbar ist
-if ! command -v uv &>/dev/null; then
-  echo "uv ist nicht installiert. Bitte installiere uv zuerst."
+usage() {
+  cat <<'EOF'
+Usage: venv [OPTIONS]
+
+Initialize a new uv project in the current directory, select an installed
+uv-managed Python version, and sync the .venv.
+
+Options:
+  -p, --python VERSION   Use a Python version or interpreter path directly
+      --bare             Only create pyproject.toml (uv init --bare)
+      --direnv-allow     Run direnv allow after writing .envrc
+  -h, --help             Show this help
+EOF
+}
+
+die() {
+  echo "Error: $*" >&2
   exit 1
-fi
+}
 
-# Liste der verwalteten Python-Versionen ermitteln.
-# uv python list gibt eine Tabelle aus – wir extrahieren die erste Spalte (Version) und überspringen die Header-Zeile.
-PY_VERSIONS=$(uv python list --only-installed | awk 'NR>1 {print $1}' | sed -E 's/^cpython-([0-9]+\.[0-9]+\.[0-9]+)-.*$/\1/')
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed."
+}
 
-if [ -z "$PY_VERSIONS" ]; then
-  echo "Keine verwalteten Python-Versionen gefunden. Installiere eine Version z.B. mit:"
-  echo "  uv python install 3.12"
-  exit 1
-fi
+python_list_from_json() {
+  local json
+  json="$(uv python list --only-installed --managed-python --output-format json)"
 
-# Falls fzf vorhanden ist, benutze es für die Auswahl, ansonsten nutze ein simples Bash-Menü.
-if command -v fzf &>/dev/null; then
-  SELECTED_VERSION=$(echo "$PY_VERSIONS" | fzf --prompt="Select Python version to use: ")
-else
-  echo "Verfügbare Python-Versionen:"
-  select ver in $PY_VERSIONS; do
-    SELECTED_VERSION=$ver
-    break
+  if command -v jq >/dev/null 2>&1; then
+    jq -r '
+      [
+        .[]
+        | select(.path != null)
+        | select(.implementation == "cpython")
+        | select(.variant == "default")
+        | {
+            version,
+            path,
+            major: .version_parts.major,
+            minor: .version_parts.minor,
+            patch: .version_parts.patch
+          }
+      ]
+      | unique_by(.version)
+      | sort_by(.major, .minor, .patch, .version)
+      | reverse
+      | .[]
+      | "\(.version)\t\(.path)"
+    ' <<<"$json"
+    return
+  fi
+
+  if command -v python3 >/dev/null 2>&1; then
+    python3 -c '
+import json
+import sys
+
+rows = json.load(sys.stdin)
+seen = set()
+items = []
+for row in rows:
+    if row.get("path") is None:
+        continue
+    if row.get("implementation") != "cpython":
+        continue
+    if row.get("variant") != "default":
+        continue
+    version = row["version"]
+    if version in seen:
+        continue
+    seen.add(version)
+    parts = row.get("version_parts") or {}
+    items.append((
+        parts.get("major", 0),
+        parts.get("minor", 0),
+        parts.get("patch", 0),
+        version,
+        row["path"],
+    ))
+
+for _, _, _, version, path in sorted(items, reverse=True):
+    print(f"{version}\t{path}")
+' <<<"$json"
+    return
+  fi
+
+  die "jq or python3 is required to read uv's JSON output."
+}
+
+guard_new_project() {
+  local conflicts=()
+  local path
+
+  for path in pyproject.toml uv.toml uv.lock .python-version .venv .envrc; do
+    [[ ! -e "$path" ]] || conflicts+=("$path")
   done
+
+  if ((${#conflicts[@]})); then
+    echo "Aborting: project/environment files already exist in the current directory:" >&2
+    printf '  %s\n' "${conflicts[@]}" >&2
+    echo "Run this in an empty project directory or remove those files intentionally." >&2
+    exit 1
+  fi
+}
+
+configure_uv_project() {
+  if grep -Eq '^\[tool\.uv\]' pyproject.toml; then
+    die "uv init already created [tool.uv]; please check add-bounds manually."
+  fi
+
+  cat >>pyproject.toml <<'EOF'
+
+[tool.uv]
+add-bounds = "exact"
+EOF
+}
+
+select_python() {
+  if [[ -n "$PYTHON_REQUEST" ]]; then
+    if [[ -x "$PYTHON_REQUEST" ]]; then
+      SELECTED_PATH="$PYTHON_REQUEST"
+    else
+      SELECTED_PATH="$(
+        uv python find --managed-python --no-python-downloads "$PYTHON_REQUEST"
+      )" || die "No installed uv-managed Python version found for '$PYTHON_REQUEST'."
+    fi
+    SELECTED_VERSION="$("$SELECTED_PATH" -c 'import platform; print(platform.python_version())')"
+    return
+  fi
+
+  local choices=()
+  local selection=""
+  mapfile -t choices < <(python_list_from_json)
+
+  if ((${#choices[@]} == 0)); then
+    echo "No uv-managed Python version found. Install one, for example with:" >&2
+    echo "  uv python install 3.13" >&2
+    exit 1
+  fi
+
+  if command -v fzf >/dev/null 2>&1; then
+    selection="$(printf '%s\n' "${choices[@]}" | fzf --prompt="Python-Version: " --delimiter=$'\t' --with-nth=1)" || true
+  else
+    echo "Available uv-managed Python versions:"
+    PS3="Python version: "
+    select selection in "${choices[@]}"; do
+      [[ -n "${selection:-}" ]] && break
+      echo "Invalid selection."
+    done
+  fi
+
+  [[ -n "$selection" ]] || die "No Python version selected."
+  SELECTED_VERSION="${selection%%$'\t'*}"
+  SELECTED_PATH="${selection#*$'\t'}"
+}
+
+AUTO_DIRENV_ALLOW=0
+BARE=0
+PYTHON_REQUEST=""
+SELECTED_VERSION=""
+SELECTED_PATH=""
+
+while (($#)); do
+  case "$1" in
+  -p | --python)
+    shift
+    [[ $# -gt 0 ]] || die "--python requires a version or interpreter path."
+    PYTHON_REQUEST="$1"
+    ;;
+  --bare)
+    BARE=1
+    ;;
+  --direnv-allow)
+    AUTO_DIRENV_ALLOW=1
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage >&2
+    die "Unknown option: $1"
+    ;;
+  esac
+  shift
+done
+
+require_command uv
+if ((AUTO_DIRENV_ALLOW)); then
+  require_command direnv
 fi
 
-if [ -z "$SELECTED_VERSION" ]; then
-  echo "Keine Python-Version ausgewählt."
-  exit 1
+guard_new_project
+select_python
+
+echo "Selected Python version: $SELECTED_VERSION"
+echo "Initializing uv project..."
+
+init_args=(--python "$SELECTED_VERSION" --no-workspace --no-pin-python)
+if ((BARE)); then
+  init_args+=(--bare)
 fi
 
-echo "Ausgewählte Python-Version: $SELECTED_VERSION"
+uv init "${init_args[@]}"
+configure_uv_project
+uv sync --python "$SELECTED_PATH"
 
-# Erstelle das virtuelle Environment mit uv und --seed (sodass pip vorinstalliert wird)
-echo "Erstelle virtuelles Environment..."
-uv venv --python "$SELECTED_VERSION" --seed || { echo "Fehler beim Erstellen des venv"; exit 1; }
-uv init
-
-# Lege eine .envrc an, damit direnv das venv beim Betreten des Verzeichnisses lädt.
-# Die Standard-direnv-Funktion "layout python" sucht nach einem venv im aktuellen Verzeichnis (.venv)
-cat <<EOF > .envrc
+cat >.envrc <<'EOF'
 source .venv/bin/activate
 EOF
 
-echo ".envrc wurde erstellt. Bitte führe 'direnv allow' aus, damit direnv das Environment automatisch aktiviert."
+if ((AUTO_DIRENV_ALLOW)); then
+  direnv allow
+else
+  echo ".envrc was created. Run 'direnv allow' if direnv should activate the environment automatically."
+fi

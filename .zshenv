@@ -1,12 +1,13 @@
 # Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
 
 if [ -n "${ZSH_VERSION-}" ]; then
-  export PATH="/usr/sbin:.:/bin:/sbin:/usr/bin:/usr/local/bin:$HOME/bin:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.fzf/bin"
+  export PATH="/opt/homebrew/bin:/usr/sbin:.:/bin:/sbin:/usr/bin:/usr/local/bin:$HOME/bin:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.fzf/bin:"
 
   : ${ZDOTDIR:=~}
   setopt no_global_rcs
   [[ ! -e ~/.zshenv-private ]] || source ~/.zshenv-private
   if [[ -o no_interactive && -z "${Z4H_BOOTSTRAPPING-}" ]]; then
+    [[ ! -e ~/.fnm-config ]] || source ~/.fnm-config
     return
   fi
   setopt no_rcs

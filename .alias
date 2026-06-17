@@ -5,6 +5,7 @@ if command -v lsd >/dev/null 2>&1; then
     alias ll='lsd -gal'
     alias lt='lsd -gltr'
     alias llt='lsd -galtr'
+    alias ls="lsd -glSr"
 else
     alias l='ls -Flh'
     alias ll='ls -Flah'
@@ -89,7 +90,7 @@ alias fda="fd --hidden --no-ignore"
 # Globals
 alias -g G="| rg -v 'rg -S' | rg "
 alias -g GC="| rg -v 'rg -S' | rg -C 5 "
-alias -g L="| moar"
+alias -g L="| less"
 alias -g J="| jq"
 alias -g C="| wc -l"
 alias -g F="| fzf --multi"
@@ -172,7 +173,7 @@ alias wi="which --full"
 alias stree='open -a SourceTree .'
 alias wetter='curl wttr.in/Berlin'
 alias tm='tmux attach || tmux new'
-alias getmp3="youtube-dl -x --audio-format mp3 "
+alias getmp3="yt-dlp -x --audio-format mp3 "
 
 gpt() { sgpt "$*" }
 gpts() { sgpt -s "$*" }
@@ -192,7 +193,7 @@ sleep-in() { echo "Going to  sleep in $1 minutes .." && sleep $((60 * $1)) && pm
 (( $+commands[gsed] )) && alias sed="gsed"
 (( $+commands[gtar] )) && alias tar="gtar"
 (( $+commands[gdate] )) && alias date="gdate"
-(( $+commands[moar] )) && alias less="moor"
+(( $+commands[moor] )) && alias less="moor"
 (( $+commands[nvim] )) && alias vim="nvim"
 
 upify() {
@@ -211,20 +212,20 @@ bindkey 'π' upify    # Alt+u
 
 ### PYTHON / DJANGO / NODE ########################################################
 alias ipy="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
-alias shell='python manage.py shell_plus'
-alias rs="manage.py runserver 0.0.0.0:8000"
+alias shell='python manage.py shell'
+alias rs="manage.py runserver 0.0.0.0:8000 --nostatic"  # nostatic lets whitenoise handle the static files (a bit better than django does)
 # Recursively delete .DS_Store and __pycache__ files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete && find . -name __pycache__ -print -delete && find . -name '*.pyc' -ls -delete"
 # Shortened python
 alias py{,3}=python3
-# Lazy-init fnm on first Node-related command
-for cmd in node npm npx yarn pm2 fnm; do
-  eval "function $cmd {\
-    unset -f node npm npx yarn pm2 fnm;\
-    eval \"\$(fnm env --use-on-cd --shell zsh)\";\
-    command $cmd \"\$@\";\
-  }"
-done
+# # Lazy-init fnm on first Node-related command
+# for cmd in node npm npx yarn pm2 fnm; do
+#   eval "function $cmd {\
+#     unset -f node npm npx yarn pm2 fnm;\
+#     eval \"\$(fnm env --use-on-cd --shell zsh)\";\
+#     command $cmd \"\$@\";\
+#   }"
+# done
 alias aid='PYTHONPATH="$(python -c "import site; print(site.getsitepackages()[-1])")" aider --no-auto-commits --model o4-mini'
 
 ### NETWORK ################################################################
@@ -242,7 +243,6 @@ function server() {
     python -m http.server ${port}
 }
 # get public/local IP addresses
-alias ip="curl -s https://ifconfig.co/json J"
 alias ip4="curl -4 -s https://ifconfig.co/json J"
 alias ip6="curl -6 -s https://ifconfig.co/json J"
 alias ips="ifconfig -a | grep -o 'inet\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet? (addr:)? ?/, \"\"); print }' | grep -v 127.0.0.1"
@@ -251,4 +251,7 @@ alias get='curl --continue-at - --location --progress-bar --remote-name --remote
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-alias info="fastfetch"
+(( $+commands[neofetch] )) && alias info="neofetch"
+(( $+commands[fastfetch] )) && alias info="fastfetch"
+
+alias -s app='open'

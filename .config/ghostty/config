@@ -43,7 +43,7 @@ window-padding-x = 2
 resize-overlay-duration = 4s 200ms
 
 font-family = "SauceCodePro Nerd Font"
-window-width = 172
+window-width = 177
 window-height = 32
 copy-on-select = "clipboard"
 keybind = cmd+left=previous_tab

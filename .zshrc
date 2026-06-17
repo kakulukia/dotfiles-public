@@ -42,7 +42,8 @@ zstyle ':completion:*'                       insert-slash       true
 zstyle ':completion:*'                       add-space          false
 zstyle ':completion:*'                       squeeze-slashes    true
 zstyle ':completion:*'                       completer          _complete
-zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*'                       matcher-list       '' 'm:{a-zA-Z}={A-Za-z}' 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*' 'm:{a-zA-Z}={A-Za-z} l:|=* r:|=*'
 zstyle ':completion:*:ssh:argument-1:'       tag-order    hosts users
 zstyle ':completion:*:scp:argument-rest:'    tag-order    hosts files users
 zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
@@ -50,7 +51,7 @@ zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 zstyle ':z4h:*'                              find-command       fd
 zstyle ':z4h:ssh:*'                          enable             yes
 zstyle ':z4h:ssh:*'                          ssh-command        command ssh
-zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' 
+zstyle ':z4h:ssh:*'                          send-extra-files   '~/.alias' '~/.config/nvim' '~/bin/select-tools' '~/bin/apps.json' '~/.config/starship.toml' '~/.gitconfig' '~/bin/diff-so-fancy' '~/.config/lsd'
 zstyle -e ':z4h:ssh:*'                       retrieve-history   'reply=($ZDOTDIR/.zsh_history.${(%):-%m}:$z4h_ssh_host)'
 zstyle ':z4h:'                               propagate-cwd      yes
 zstyle ':fzf-tab:complete:cd:*'              fzf-preview        'lsd $realpath'
@@ -61,6 +62,7 @@ if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   zstyle ':z4h:powerlevel10k' channel none
 fi
 
+z4h install romkatv/archive romkatv/zsh-prompt-benchmark
 
 # HIER GEHTS LOS
 #######################################
@@ -79,8 +81,9 @@ fpath=($Z4H/romkatv/archive $fpath)
 autoload -Uz -- zmv archive lsarchive unarchive ~/dotfiles/functions/[^_]*(N:t)
 
 
-export EDITOR=nvim
-export PAGER=moar
+export EDITOR=vim
+export PAGER=less
+(( $+commands[moor] )) && export PAGER=moor
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_ENV_HINTS=1
 export SYSTEMD_LESS=moar
@@ -139,20 +142,22 @@ z4h bindkey z4h-fzf-dir-history Alt+Down
 # Check if starship is installed
 if [[ $ZSH_PROMPT_STYLE == "starship" && $+commands[starship] ]]; then
   # Check if cache file exists
-  if [[ ! -f ~/.cache/starship-init.zsh ]]; then
-    echo "Creating Starship init cache..."
+  if [[ ! -s ~/.cache/starship-init.zsh ]]; then
+    echo "Rebuilding Starship init cache..."
     mkdir -p ~/.cache
     starship init zsh > ~/.cache/starship-init.zsh
   fi
 
   # Load cached initialization with z4h
   z4h source -c -- ~/.cache/starship-init.zsh
+  unset RPS1 RPROMPT
 fi
 
 z4h source -c -- $ZDOTDIR/.alias
 z4h source -c -- $ZDOTDIR/.zsh-profile  # for local changes that wont be synced
 z4h source -c -- $ZDOTDIR/.zshrc-private
-z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.alias,.zshrc-private}
+z4h source -c -- $ZDOTDIR/.fnm-config
+z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.alias,.zshrc-private,.fnm-config}
 
 # show benchmark results
 [ -z "$ZPROF" ] || zprof
