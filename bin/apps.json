@@ -10,6 +10,8 @@
       { "name": "moor", "default": true, "desc": "less alternative" },
       { "name": "rsync", "default": true, "desc": "ignore apples openrsync" },
       { "name": "wget", "default": true, "desc": "Web-Downloader" },
+
+      { "name": "asciinema", "default": false, "desc": "Terminal session recorder and player" },
       { "name": "cloc", "default": false, "desc": "Count Lines of Code" },
       { "name": "coreutils", "default": false, "desc": "GNU Coreutils (gdate, etc.)", "cmd": "gdate" },
       {
@@ -48,14 +50,13 @@
       { "name": "du-dust", "default": true, "desc": "du + rust (show disc usage)", "cmd": "dust" },
       { "name": "erdtree", "default": true, "desc": "Faster tree tool", "cmd": "erd" },
       { "name": "fd-find", "default": true, "desc": "Faster find alternative", "cmd": "fd" },
-      { "name": "fnm", "default": true, "desc": "Fast Node Manager" },
       { "name": "lsd", "default": true, "desc": "ls with icons, colors and speed" },
       { "name": "rip2", "default": true, "desc": "Delete with trash", "cmd": "rip" },
       { "name": "ripgrep", "default": true, "desc": "grep, but a bit faster", "cmd": "rg" },
       { "name": "tealdeer", "default": true, "desc": "Better manuals with tldr", "cmd": "tldr" },
       { "name": "starship", "default": true, "desc": "Cross-shell prompt" },
-      { "name": "zoxide", "default": true, "desc": "fasd for directories" },
       { "name": "broot", "default": false, "desc": "Dateisystem-Navigation" },
+      { "name": "fnm", "default": false, "desc": "Fast Node Manager" },
       { "name": "git-delta", "default": false, "desc": "Verbessertes Git-Diff", "cmd": "delta" },
       { "name": "hyperfine", "default": false, "desc": "Benchmarking Tool" },
       { "name": "hck", "default": false, "desc": "cut with regex" },
@@ -65,14 +66,14 @@
   "uv": {
     "cmd": "tool install",
     "apps": [
-      { "name": "httpie", "default": true, "desc": "User friendly HTTP CLI" },
-      { "name": "poetry", "default": true, "desc": "Still my default package manger" },
-      { "name": "shell-gpt", "default": true, "desc": "Chat GPT for the command line", "cmd": "sgpt" },
-      { "name": "ipython", "default": true, "desc": "Better Python shell" },
       { "name": "magic-wormhole", "default": true, "desc": "Get things from one computer to another, safely.", "cmd": "wormhole" },
       { "name": "cookiecutter", "default": false, "desc": "Coding project template tool" },
+      { "name": "httpie", "default": false, "desc": "User friendly HTTP CLI" },
       { "name": "http-prompt", "default": false, "desc": "Interaktive HTTP-Shell" },
+      { "name": "ipython", "default": false, "desc": "Better Python shell" },
       { "name": "pgcli", "default": false, "desc": "Interaktiver Postgres Client" },
+      { "name": "poetry", "default": false, "desc": "Still my default package manger" },
+      { "name": "shell-gpt", "default": false, "desc": "Chat GPT for the command line", "cmd": "sgpt" },
       { "name": "sqlit-tui", "default": false, "desc": "The lazygit of SQL databases.", "cmd": "sqlit" }
     ]
   },

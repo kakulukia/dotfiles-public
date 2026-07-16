@@ -566,16 +566,16 @@ def iter_dependencies(data):
     project = data.get("project", {})
 
     for dep in project.get("dependencies", []):
-        yield dep
+        yield dep, False
 
     for deps in project.get("optional-dependencies", {}).values():
         for dep in deps:
-            yield dep
+            yield dep, False
 
-    for deps in data.get("dependency-groups", {}).values():
+    for group, deps in data.get("dependency-groups", {}).items():
         for dep in deps:
             if isinstance(dep, str):
-                yield dep
+                yield dep, group == "dev"
 
 
 def pinned_requirement(dep):
@@ -613,8 +613,9 @@ with open(pyproject_path, "rb") as handle:
 
 requirements = {}
 conflicts = {}
+dev_requirements = set()
 
-for dep in iter_dependencies(data):
+for dep, is_dev in iter_dependencies(data):
     result = pinned_requirement(dep)
     if result is None:
         continue
@@ -631,6 +632,8 @@ for dep in iter_dependencies(data):
         continue
 
     requirements[canonical_name] = current
+    if is_dev:
+        dev_requirements.add(canonical_name)
 
 if conflicts:
     print(
@@ -663,7 +666,9 @@ for canonical_name, (name, current_version, current_major) in sorted(requirement
     except subprocess.CalledProcessError:
         safe_version = "-"
 
-    major_updates.append((name, current_version, safe_version, latest_version))
+    major_updates.append(
+        (name, current_version, safe_version, latest_version, canonical_name in dev_requirements)
+    )
 
 if not major_updates:
     if heading:
@@ -672,9 +677,10 @@ if not major_updates:
 
 if heading:
     print("uv-update: Blocked major updates:")
-for name, current_version, safe_version, latest_version in major_updates:
+for name, current_version, safe_version, latest_version, is_dev in major_updates:
     print(f"  {name}: {current_version} -> {latest_version} (safe: {safe_version})")
-    print(f"    uv add \"{name}=={latest_version}\"")
+    dev_flag = " --dev" if is_dev else ""
+    print(f"    uv add{dev_flag} \"{name}=={latest_version}\"")
 
 sys.exit(1)
 PY
