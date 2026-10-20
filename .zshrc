@@ -68,6 +68,12 @@ z4h install romkatv/archive romkatv/zsh-prompt-benchmark
 #######################################
 z4h init || return
 
+# Offer the standard login-shell change after SSH teleportation.
+if [[ -n ${Z4H_SSH-} && ! -e $Z4H/stickycache/no-chsh ]] &&
+   (( ! _z4h_dangerous_root )) && zstyle -T :z4h: chsh; then
+  -z4h-chsh || true
+fi
+
 z4h bindkey z4h-accept-line         Enter
 z4h bindkey z4h-fzf-dir-history     Shift+Down
 z4h bindkey z4h-exit                Ctrl+D
